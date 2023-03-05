@@ -6,63 +6,26 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/05 15:16:51 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/05 19:28:47 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "minishell.h"
 
-// bool	reprompt = false;
-
-// void	handle_kill(int sig)
-// {
-// 	// bool	*rep;
-// 	// (void)info;
-// 	// (void)reprompt;
-// 	(void)sig;
-// 	if (sig == SIGINT)
-// 	{
-// 		reprompt = true;
-// 		write(1, "gdf\n", 4);
-// 		// prompt();
-// 	}
-// }
-
-// char	**get_envpath(char **envp)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (envp[i] != NULL && ft_strnstr(envp[i], "PATH", 4) == NULL)
-// 		i++;
-// 	if (envp[i] == NULL)
-// 		return (NULL);
-// 	return (ft_split(envp[i] + 5, ':'));
-// }
-
-// char	*get_command_path(char **paths, char **main_cmd)
-// {
-// 	int		i;
-// 	char	*str;
-// 	char	*cmd;
-
-// 	i = 0;
-// 	cmd = ft_strjoin("/", main_cmd[0]);
-// 	if (access(main_cmd[0], F_OK | X_OK) == 0)
-// 		return (free(cmd), main_cmd[0]);
-// 	while (paths[i] != NULL)
-// 	{
-// 		str = ft_strjoin(paths[i], cmd);
-// 		if (access(str, F_OK) == 0)
-// 			break ;
-// 		i++;
-// 		free(str);
-// 	}
-// 	if (paths[i] == NULL)
-// 		return (free(cmd),  NULL);
-// 	else
-// 		return (free(cmd), str);
-// }
+void	handle_kill(int sig)
+{
+	(void)sig;
+	if (sig == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_clear_history();
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+	else if (sig == SIGQUIT)
+		return ;
+}
 
 bool	count_quotes(char *str)
 {
@@ -73,9 +36,9 @@ bool	count_quotes(char *str)
 	s_is_opened = 0;
 	while (*str)
 	{
-		if (*str == '"')
+		if (*str == 34)
 			d_is_opened = !d_is_opened;
-		else if (!ft_strncmp(str, "'", 1) && !d_is_opened)
+		else if (*str == 39 && !d_is_opened)
 			s_is_opened = !s_is_opened;
 		str++;
 	}
@@ -105,6 +68,8 @@ void    prompt()
 {
 	char	*str;
 
+	signal(SIGINT, handle_kill);
+	signal(SIGQUIT, handle_kill);
 	while (1) {
 		str = readline("\033[1;32mminishell> \033[0m");
 		if (!str || !ft_strncmp(str, "exit", 4))

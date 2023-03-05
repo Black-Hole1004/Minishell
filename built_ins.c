@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/05 19:10:35 by ahmaymou         ###   ########.fr       */
+/*   Created: 2023/03/05 19:31:12 by ahmaymou          #+#    #+#             */
+/*   Updated: 2023/03/05 19:33:19 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <readline/readline.h>
-# include <ctype.h>
-# include <readline/history.h>
-# include <stdbool.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <signal.h>
-# include <stdio.h>
-# include "libft/libft.h"
+#include "minishell.h"
 
-void    prompt();
+void    echo(char *str, bool option)
+{
+    if (option)
+        printf("%s", str);
+    else
+        printf("%s\n", str);
+}
