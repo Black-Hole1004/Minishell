@@ -6,7 +6,7 @@
 #    By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/09 14:24:42 by ahmaymou          #+#    #+#              #
-#    Updated: 2023/03/05 19:54:40 by ahmaymou         ###   ########.fr        #
+#    Updated: 2023/03/05 20:30:01 by ahmaymou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,12 +16,7 @@ SRCS_OBJ = $(shell ls | grep .c | grep -v main)
 
 SRC = main.c
 
-TO_INSTALL = $(shell brew --prefix readline | grep "Error")
 OS = $(shell uname)
-
-ifeq ($(TO_INSTALL),Error)
-	$(shell brew install readline)
-endif
 
 ifeq ($(OS),Darwin)
 	READLINE_INC = -I $(shell brew --prefix readline)/include

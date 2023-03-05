@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:24:53 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/05 15:17:05 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/05 20:39:50 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 int main()
 {
-	// (void)ac;
 	// (void)av;
 	// struct sigaction	sa;
-
+	pwd();
+	change_dir("/Users/ahmaymou/Desktop");
+	pwd();
+	change_dir("/Users/ahmaymou/Desktop/Minishell");
+	pwd();
 	prompt();
 	prompt();
 	// sa.sa_sigaction = handle_kill;
