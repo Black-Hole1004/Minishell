@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+         #
+#    By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/09 14:24:42 by ahmaymou          #+#    #+#              #
-#    Updated: 2023/03/05 20:30:01 by ahmaymou         ###   ########.fr        #
+#    Updated: 2023/03/06 12:44:24 by blackhole        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ all : $(NAME)
 	$(CC) $(FLAGS) $(READLINE_INC) -c $< -o $@
 
 $(NAME) : $(OBJ) minishell.h main.c
-	make -C libft/
+	make bonus -C libft/
 	$(CC) $(FLAGS) $(SRC) $(OBJ) $(LIB) -lreadline $(READLINE_LIB) -o $(NAME)
 	@rm -rf $(LIBS)
 
