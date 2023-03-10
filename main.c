@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:24:53 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/06 12:43:47 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/07 13:22:42 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,20 @@ int main()
 	// change_dir("/Users/ahmaymou/Desktop/Minishell");
 	// pwd();
 	// prompt();
-	// prompt();
-    t_list *list;
-    list = NULL;
-    ft_lstadd_back(&list, ft_lstnew("1"));
-    ft_lstadd_back(&list, ft_lstnew("2"));
-    ft_lstadd_back(&list, ft_lstnew("3"));
-    ft_lstadd_back(&list, ft_lstnew("0"));
-    t_list *current = list;
-    while (current != NULL) {
-        printf("%s ", (char *)current->content);
-        current = current->next;
-    }
-    printf("\n");
-    return 0;
+	prompt();
+    // t_list *list;
+    // list = NULL;
+    // ft_lstadd_back(&list, ft_lstnew("1"));
+    // ft_lstadd_back(&list, ft_lstnew("2"));
+    // ft_lstadd_back(&list, ft_lstnew("3"));
+    // ft_lstadd_back(&list, ft_lstnew("0"));
+    // t_list *current = list;
+    // while (current != NULL) {
+    //     printf("%s ", (char *)current->content);
+    //     current = current->next;
+    // }
+    // printf("\n");
+    // return 0;
 	// sa.sa_sigaction = handle_kill;
 	// sigaction(SIGINT, &sa, NULL);
 	// while (1);

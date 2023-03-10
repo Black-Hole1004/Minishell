@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 14:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2022/11/12 15:52:52 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/10 14:54:35 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,22 @@ char	*ft_strdup(const char *s1)
 		return (NULL);
 	ft_strlcpy(copy, s1, len + 1);
 	return (copy);
+}
+
+char	*ft_strndup(const char *s1, size_t n)
+{
+	char	*new_str;
+	size_t	i;
+
+	new_str = (char *)malloc(sizeof(char) * (n + 1));
+	if (!new_str)
+		return (NULL);
+	i = 0;
+	while (i < n && s1[i] != '\0')
+	{
+		new_str[i] = s1[i];
+		i++;
+	}
+	new_str[i] = '\0';
+	return (new_str);
 }

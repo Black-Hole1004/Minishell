@@ -6,53 +6,97 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/05 19:28:47 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/10 20:31:22 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+#include "minishell.h"
 
-void	handle_kill(int sig)
+/*temp function */
+
+void	print_list(char *str, t_list *list)
 {
-	(void)sig;
-	if (sig == SIGINT)
+	t_list	*current;
+
+	current = list;
+	printf("After tokenisation: of str %s\n", str);
+	while (current)
 	{
-		write(1, "\n", 1);
-		rl_clear_history();
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
+		printf("{%s:%d}", (char *)current->content, current->type);
+		if (current->next)
+			printf("->");
+		current = current->next;
 	}
-	else if (sig == SIGQUIT)
-		return ;
 }
 
-bool	count_quotes(char *str)
+void	assign_type(t_list *command)
 {
-	bool	d_is_opened;
-	bool	s_is_opened;
+	t_list	*temp;
+	char	*cmd;
 
-	d_is_opened = 0;
-	s_is_opened = 0;
-	while (*str)
+	temp = command;
+	while (temp)
 	{
-		if (*str == 34)
-			d_is_opened = !d_is_opened;
-		else if (*str == 39 && !d_is_opened)
-			s_is_opened = !s_is_opened;
-		str++;
+		cmd = (char *)temp->content;
+		if (!ft_strcmp(cmd, "|"))
+			temp->type = Pipe;
+		else if (!ft_strcmp(cmd, "<"))
+			temp->type = in_redir;
+		else if (!ft_strcmp(cmd, "<<"))
+			temp->type = here_doc;
+		else if (!ft_strcmp(cmd, ">"))
+			temp->type = trunc;
+		else if (!ft_strcmp(cmd, ">>"))
+			temp->type = append;
+		else
+			temp->type = word;
+		temp = temp->next;
 	}
-	if (!d_is_opened && !s_is_opened)
-		return (1);
+}
+
+void	fill_list(char *inputString, t_list **head)
+{
+	int		end_word;
+	char	*word;
+
+	if (!(*inputString))
+		return ;
+	if (*inputString == ' ')
+	{
+		while (*inputString == ' ')
+			inputString++;
+		fill_list(inputString, head);
+	}
 	else
-		return (0);
+	{
+		end_word = end_word_index(inputString);
+		if (end_word == -1)
+		{
+			word = ft_strtrim(ft_strdup(inputString), " ");
+			ft_lstadd_back(head, ft_lstnew(word));
+			return ;
+		}
+		word = ft_strtrim(ft_substr(inputString, 0, end_word), " ");
+		ft_lstadd_back(head, ft_lstnew(word));
+		fill_list(inputString + end_word, head);
+	}
 }
 
 int	pars_error(char *str)
 {
-	if (*str == '|' || *(str + ft_strlen(str) - 1) == '|')
+	t_list	*command;
+
+	command = NULL;
+	str = ft_strtrim(str, " ");
+	if (*str == '|' || *str == ';' || *str == '>'  || *str == '<')
 	{
-		printf("minishell: syntax error near unexpected token `|'\n");
+		printf("minishell: syntax error near unexpected token `%c'\n", *(str));
+		return (1);
+	}
+	else if (*(str + ft_strlen(str) - 1) == '|' || *(str + ft_strlen(str) - 1) == ';'
+		|| *(str + ft_strlen(str) - 1) == '>' || *(str + ft_strlen(str) - 1) == '<')
+	{
+		printf("minishell: syntax error near unexpected token `\\n'\n");
 		return (1);
 	}
 	if (!count_quotes(str))
@@ -60,23 +104,32 @@ int	pars_error(char *str)
 		printf("minishell: syntax error, unclosed quotes\n");
 		return (1);
 	}
-	else
-		return (0);
+	fill_list(str, &command);
+	assign_type(command);
+	command = check_join(command);
+	print_list(str, command);
+	printf("\n");
+	return (0);
 }
 
-void    prompt()
+void	prompt(void)
 {
 	char	*str;
 
 	signal(SIGINT, handle_kill);
 	signal(SIGQUIT, handle_kill);
-	while (1) {
+	while (1)
+	{
 		str = readline("\033[1;32mminishell> \033[0m");
 		if (!str || !ft_strncmp(str, "exit", 4))
 		{
 			clear_history();
 			exit(1);
 		}
+		if (!ft_strncmp(str, "cd", 2))
+			chdir(str + 3);
+		else if (!ft_strncmp(str, "pwd", 3))
+			printf("%s\n", getcwd(NULL, 0));
 		if (!pars_error(str))
 			add_history(str);
 	}
