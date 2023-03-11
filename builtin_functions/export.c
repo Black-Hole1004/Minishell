@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 18:22:16 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/09 22:22:26 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/03/11 17:06:25 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void export(t_infos *infos)
 	i = 0;
 	sort_envp(infos);
 	temp = infos->my_envp;
-	while (temp->next)
+	while (temp)
 	{
 		if (!temp->variable_value)
 			printf("declare -x %s\n", temp->variable_name);
@@ -64,24 +64,22 @@ void add_variable(t_infos *infos, char *var_name, char *var_value)
 		if (!ft_strncmp(temp->variable_name, var_name, ft_strlen(temp->variable_name)))
 		{
 			if(!var_value)
-			{
-				free(var_name);
 				break ;
-			}
 			else if (var_name[ft_strlen(var_name) - 1] == '+')
 			{
-				temp->variable_value = ft_strjoin(temp->variable_value, var_value);
+				temp->variable_value = ft_strjoin(temp->variable_value, var_value, 1);
 				return (free(var_name));
 			}
 			else
 			{
-				temp->variable_value = var_value;
+				free(temp->variable_value);
+				temp->variable_value = ft_strdup(var_value, 0);
 				return (free(var_name));
 			}
 		}
 		temp = temp->next;
 	}
-	add_back_envp(&infos->my_envp, new_node_envp(var_name, var_value));
+	add_back_envp(&infos->my_envp, new_node_envp(var_name, ft_strdup(var_value, 0)));
 }
 
 void export_variable(t_infos *infos, char *string)
@@ -96,6 +94,7 @@ void export_variable(t_infos *infos, char *string)
 	if (check_variable_regex(var_name))
 	{
 		ft_printf(2, "minishell: export: `%s': not a valid identifier\n", var_name);
+		free(var_name);
 		return ;
 	}
 	if (var_value)
