@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 11:05:21 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/10 20:38:01 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/11 17:48:50 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	free((void*)s1);
 	len = ft_strlen(s1) + ft_strlen(s2);
+	free((void*)s1);
 	to_return = (char *)malloc((len + 1)
 			* sizeof(char));
 	if (!to_return)

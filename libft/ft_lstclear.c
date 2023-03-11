@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 13:06:07 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/10 20:42:58 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/11 15:02:16 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 
 void	ft_lstclear(t_list **lst)
 {
-	if (!lst)
+	t_list	*curr;
+	t_list	*next;
+
+	if (!lst || !*lst)
 		return ;
-	while (*lst && lst)
+	curr = *lst;
+	while (curr)
 	{
-		free((*lst)->content);
-		free(*lst);
+		next = curr->next;
+		free(curr);
+		free(curr->content);
+		curr = next;
 	}
-	lst = NULL;
+	*lst = NULL;
 }

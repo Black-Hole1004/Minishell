@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/10 19:17:15 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/11 18:49:11 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@
 
 typedef enum TYPE
 {
-	word,
-	trunc,
-	in_redir,
-	append,
-	here_doc,
-	delimiter,
-	in_file,
-	out_file,
-	Pipe
+	word,/*0*/
+	trunc,/*1*/
+	in_redir,/*2*/
+	append,/*3*/
+	here_doc,/*4*/
+	delimiter,/*5*/
+	in_file,/*6*/
+	out_file,/*7*/
+	Pipe /*8*/
 }			t_type;
 
 void	prompt(void);
@@ -45,7 +45,8 @@ bool	count_quotes(char *str);
 int		end_word_index(char *str);
 bool	is_spec(char str);
 int		end_word_index(char *str);
-t_list	*check_join(t_list *command);
+void	add_or_join(t_list **head, char *temp, t_list **temp2);
 void	assign_type(t_list *command);
+t_type	what_type(char *cmd);
 
 #endif

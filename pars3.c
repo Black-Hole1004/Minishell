@@ -6,46 +6,23 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 19:09:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/10 20:43:32 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/11 18:07:08 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	join_words(t_list **command, t_list **to_return)
+void	add_or_join(t_list **head, char *temp, t_list **temp2)
 {
-	// char *temp;
-
-	// temp = (*command)->content;
-	if ((*command)->next && (*command)->next->type == word)
+	if ((*temp2) && what_type(temp) == word && what_type((*temp2)->content) == word)
 	{
-		(*command)->content = ft_strjoin((*command)->content, " ");
-		(*command)->content = ft_strjoin((*command)->content, (*command)->next->content);
-		(*command)->next = (*command)->next->next;
+		(*temp2)->content = ft_strjoin((*temp2)->content, " ");
+		(*temp2)->content = ft_strjoin((*temp2)->content, temp);
 	}
 	else
 	{
-		ft_lstadd_back(to_return, ft_lstnew((*command)->content));
-		(*command) = (*command)->next;
+		(*temp2) = ft_lstnew(ft_strtrim(temp, " "));
+		(*temp2)->type = what_type(temp);
+		ft_lstadd_back(head, (*temp2));
 	}
-}
-
-t_list	*check_join(t_list *command)
-{
-	t_list	*to_return;
-
-	to_return = NULL;
-	while (command)
-	{
-		if (command->type == word)
-			join_words(&command, &to_return);
-		else
-		{
-			ft_lstadd_back(&to_return, ft_lstnew(command->content));
-			command = command->next;
-		}
-	}
-	// ft_lstclear(&command);
-	assign_type(to_return);
-	return (to_return);
 }
