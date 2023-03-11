@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/11 20:08:07 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/11 22:22:21 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,16 @@ void	print_list(t_list *list)
 
 t_type	what_type(char *cmd)
 {
-	if (!ft_strcmp(cmd, "|"))
+	if (!ft_strncmp(cmd, "|", 1))
 		return (Pipe);
-	else if (!ft_strcmp(cmd, "<"))
-		return (in_redir);
-	else if (!ft_strcmp(cmd, "<<"))
+	else if (!ft_strncmp(cmd, "<<", 2))
 		return (here_doc);
-	else if (!ft_strcmp(cmd, ">"))
-		return (trunc);
-	else if (!ft_strcmp(cmd, ">>"))
+	else if (!ft_strncmp(cmd, "<", 1))
+		return (in_redir);
+	else if (!ft_strncmp(cmd, ">>", 2))
 		return (append);
+	else if (!ft_strncmp(cmd, ">", 1))
+		return (trunc);
 	else
 		return (word);
 }
@@ -118,6 +118,8 @@ int	pars_error(char *str)
 	fill_list(inpStr, &command);
 	assign_type(command);
 	print_list(command);
+	if (check_pars_errors(command))
+		return (free(inpStr), ft_lstclear(&command), 1);
 	return (free(inpStr), ft_lstclear(&command), 0);
 }
 
