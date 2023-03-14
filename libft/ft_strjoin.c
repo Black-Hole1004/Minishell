@@ -6,13 +6,13 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 11:05:21 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/11 17:48:50 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/13 14:53:18 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2, bool free_s1)
 {
 	char				*to_return;
 	unsigned int		len;
@@ -21,7 +21,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!s1 || !s2)
 		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2);
-	free((void*)s1);
+	if (free_s1)
+		free((void*)s1);
 	to_return = (char *)malloc((len + 1)
 			* sizeof(char));
 	if (!to_return)

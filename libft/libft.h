@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 14:58:35 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/10 20:40:22 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/14 19:07:23 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <stdbool.h>
 # include <stdint.h>
+
 
 void				*ft_memset(void *dest, int c, size_t n);
 void				ft_bzero(void *b, size_t n);
@@ -48,7 +50,7 @@ char				*ft_strdup(const char *str);
 void				ft_striteri(char *s, void (*f)(unsigned int, char*));
 
 char				*ft_substr(char const *s, unsigned int start, size_t len);
-char				*ft_strjoin(const char *s1, const char *s2);
+char				*ft_strjoin(const char *s1, const char *s2, bool free_s1);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_split(char const *s, char c);
 char				*ft_itoa(int n);
@@ -60,8 +62,13 @@ void				ft_putnbr_fd(int n, int fd);
 
 typedef struct s_list
 {
-	void			*content;
+	char			*content;
+	char			**commands;
 	int				type;
+	char			*in_file;
+	char			*out_file;
+	char			*delimiter;
+	int				fd;
 	struct s_list	*next;
 	struct s_list	*prev;
 }					t_list;

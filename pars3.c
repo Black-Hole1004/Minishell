@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 19:09:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/11 22:35:04 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:55:09 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,20 @@ void	print_error(char c)
 	ft_putstr_fd("'\n", 2);
 }
 
-void	add_or_join(t_list **head, char *temp, t_list **temp2)
+void	add_or_join(t_list **head, char *temp, t_list **temp2, int *red_c)
 {
-	if ((*temp2) && what_type(temp) == word && what_type((*temp2)->content) == word)
+	if ((*temp2) && what_type(temp) == word
+		&& (*temp2)->type == word && *red_c % 2)
 	{
-		(*temp2)->content = ft_strjoin((*temp2)->content, " ");
-		(*temp2)->content = ft_strjoin((*temp2)->content, temp);
+		(*temp2)->content = ft_strjoin((*temp2)->content, " ", 1);
+		(*temp2)->content = ft_strjoin((*temp2)->content, temp, 1);
 	}
 	else
 	{
 		(*temp2) = ft_lstnew(ft_strtrim(temp, " "));
 		(*temp2)->type = what_type(temp);
 		ft_lstadd_back(head, (*temp2));
+		(*red_c)++;
 	}
 }
 
@@ -43,7 +45,7 @@ int	check_pars_erros2(t_list *temp, char *str)
 		return (print_error(*str), 1);
 	if (temp->type == trunc && !temp->next)
 		return (print_error(*str), 1);
-	if (temp->type == trunc && temp->next && temp->next->type != word
+	if (temp->type == trunc && temp->next && temp->next->type != out_file
 		&& temp->next->type != Pipe)
 		return (print_error(*str), 1);
 	return (0);
@@ -55,7 +57,7 @@ int	check_pars_errors(t_list *command)
 	char	*str;
 
 	temp = command;
-	str = "\\n";
+	str = "'newline'";
 	while (temp)
 	{
 		if (temp->next)

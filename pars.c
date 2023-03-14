@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/11 22:22:21 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/14 19:25:47 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,16 @@
 void	print_list(t_list *list)
 {
 	t_list	*current;
+	int		i = -1;
 
 	current = list;
 	printf("After tokenisation: of str\n");
 	while (current)
 	{
-		printf("{%s:%d}", (char *)current->content, current->type);
+		printf("{%s:%d}\nSplitted command:\n", current->content, current->type);
+		current->commands = split_string(current->content);
+		while (current->commands[++i])
+			printf("tmp->commands[%d] = %s\n", i, current->commands[i]);
 		if (current->next)
 			printf("->");
 		current = current->next;
@@ -54,7 +58,7 @@ void	assign_type(t_list *command)
 	temp = command;
 	while (temp)
 	{
-		cmd = (char *)temp->content;
+		cmd = temp->content;
 		temp->type = what_type(cmd);
 		if (temp->prev && temp->type == word && temp->prev->type == in_redir)
 			temp->type = in_file;
@@ -70,11 +74,15 @@ int	fill_list(char *inputString, t_list **head)
 {
     char	*temp;
     int		end_word;
+	int		redir_count;
 	t_list	*temp2;
 
 	temp2 = NULL;
+	redir_count = 0;
     while (*inputString)
     {
+		if (!(redir_count % 2))
+			redir_count = 0;
         if (*inputString == ' ')
             while (*inputString == ' ')
                 inputString++;
@@ -82,14 +90,17 @@ int	fill_list(char *inputString, t_list **head)
         {
             end_word = end_word_index(inputString);
             temp = ft_substr(inputString, 0, end_word);
+			if (what_type(temp) == in_redir || what_type(temp) == trunc
+				|| what_type(temp) == append || what_type(temp) == here_doc)
+				redir_count++;
+			add_or_join(head, temp, &temp2, &redir_count);
             if (end_word == -1)
-                return (add_or_join(head, temp, &temp2), free(temp), 0);
-			add_or_join(head, temp, &temp2);
+                return (free(temp), 0);
             free(temp);
             inputString += end_word;
         }
     }
-	return (0);
+	return (expand_multi_vars(head), 0);
 }
 
 int	pars_error(char *str)
