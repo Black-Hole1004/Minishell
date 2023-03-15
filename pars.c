@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 21:44:07 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 23:41:28 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,10 @@ int	pars_error(char *str)
 	command = NULL;
 	inpStr = ft_strtrim(str, " ");
 	if (!inpStr || !*inpStr)
-		return (0);
+		return (free(inpStr), 0);
 	if (*inpStr == '|' || *inpStr == ';')
 	{
-		printf("minishell: syntax error near unexpected token `%c'\n", *(str));
+		printf("minishell: syntax error near unexpected token `%c'\n", *(inpStr));
 		return (free(inpStr), 1);
 	}
 	else if (*(inpStr + ft_strlen(inpStr) - 1) == '|' || *(inpStr + ft_strlen(inpStr) - 1) == ';'
@@ -118,7 +118,7 @@ int	pars_error(char *str)
 		printf("minishell: syntax error near unexpected token `\\n'\n");
 		return (free(inpStr), 1);
 	}
-	if (!count_quotes(str))
+	if (!count_quotes(inpStr))
 	{
 		printf("minishell: syntax error, unclosed quotes\n");
 		return (free(inpStr), 1);
@@ -132,7 +132,7 @@ int	pars_error(char *str)
 	t_list	*final;
 	final = create_final_list(&command);
 	print_list(final);
-	return (free(inpStr), ft_lstclear(&command), 0);
+	return (free(inpStr), ft_lstclear(&command),ft_lstclear(&final), 0);
 }
 
 void	prompt(void)

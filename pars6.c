@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars6.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 14:23:00 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 21:45:49 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 23:32:03 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	count_commands(t_list *temp)
 			count++;
 		temp = temp->next;
 	}
-	return ((2 * count) + 1);
+	return (count + 1);
 }
 
 void	get_node(t_list **head, t_list **final)
@@ -32,12 +32,7 @@ void	get_node(t_list **head, t_list **final)
 
 	temp = ft_lstnew(ft_strdup("", 0));
 	if (*head && (*head)->type == Pipe)
-	{
-		temp->type = Pipe;
-		ft_lstadd_back(final, temp);
 		(*head) = (*head)->next;
-		return ;
-	}
 	while ((*head) && (*head)->type != Pipe)
 	{
 		if ((*head)->type == word)
@@ -51,7 +46,7 @@ void	get_node(t_list **head, t_list **final)
 			temp->out_file = (*head)->content;
 		else if ((*head)->type == delimiter)
 			temp->delimiter = (*head)->content;
-		temp->type = (*head)->type;
+		temp->type = word;
 		(*head) = (*head)->next;
 	}
 	ft_lstadd_back(final, temp);
