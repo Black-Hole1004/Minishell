@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:13:54 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 13:31:07 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 21:43:31 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,14 @@ void	expand_multi_vars(t_list **head)
 	tmp = *head;
 	while (tmp)
 	{
-		while (var_exist(tmp->content) && is_expandable(tmp->content))
-			expand_variables(tmp);
-		tmp = tmp->next;
+		if (tmp->prev && tmp->prev->type == here_doc)
+			tmp = tmp->next;
+		if (tmp)
+		{
+			while (var_exist(tmp->content) && is_expandable(tmp->content))
+				expand_variables(tmp);
+			tmp = tmp->next;
+		}
 	}
 }
 

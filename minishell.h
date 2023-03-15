@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/14 20:26:05 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 19:48:03 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ typedef enum TYPE
 	in_file,/*5*/
 	append,/*6*/
 	out_file,/*7*/
-	Pipe /*8*/
+	Pipe,/*8*/
+	_delimiter/*9*/
 }			t_type;
 
 void	prompt(void);
@@ -57,5 +58,6 @@ bool	is_expandable(char *str);
 int		count_tokens(const char* str);
 char**	split_string(const char* str);
 char*	extract_token(const char* start, const char *str);
+t_list	*create_final_list(t_list **head);
 
 #endif

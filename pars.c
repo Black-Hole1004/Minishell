@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 13:31:17 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 21:44:07 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	print_list(t_list *list)
 	printf("After tokenisation: of str\n");
 	while (current)
 	{
-		printf("{%s:%d}", current->content, current->type);
+		printf("{%s:type:%d}", current->content, current->type);
 		if (current->next)
 			printf("->");
 		current = current->next;
@@ -34,16 +34,15 @@ t_type	what_type(char *cmd)
 {
 	if (!ft_strncmp(cmd, "|", 1))
 		return (Pipe);
-	else if (!ft_strncmp(cmd, "<<", 2))
+	else if (ft_strlen(cmd) > 1 && !ft_strncmp(cmd, "<<", 2))
 		return (here_doc);
+	else if (ft_strlen(cmd) > 1 && !ft_strncmp(cmd, ">>", 2))
+		return (append);
 	else if (!ft_strncmp(cmd, "<", 1))
 		return (in_redir);
-	else if (!ft_strncmp(cmd, ">>", 2))
-		return (append);
 	else if (!ft_strncmp(cmd, ">", 1))
 		return (trunc);
-	else
-		return (word);
+	return (word);
 }
 
 void	assign_type(t_list *command)
@@ -68,17 +67,17 @@ void	assign_type(t_list *command)
 
 int	fill_list(char *inputString, t_list **head)
 {
-    char	*temp;
-    int		end_word;
-	int		redir_count;
-	t_list	*temp2;
+    char		*temp;
+    int			end_word;
+	int			red_c;
+	t_list		*temp2;
 
 	temp2 = NULL;
-	redir_count = 0;
+	red_c = 0;
     while (*inputString)
     {
-		if (!(redir_count % 2))
-			redir_count = 0;
+		if (!(red_c % 2))
+			red_c = 0;
         if (*inputString == ' ')
             while (*inputString == ' ')
                 inputString++;
@@ -88,10 +87,10 @@ int	fill_list(char *inputString, t_list **head)
             temp = ft_substr(inputString, 0, end_word);
 			if (what_type(temp) == in_redir || what_type(temp) == trunc
 				|| what_type(temp) == append || what_type(temp) == here_doc)
-				redir_count++;
-			add_or_join(head, temp, &temp2, &redir_count);
+				red_c++;
+			add_or_join(head, temp, &temp2, &red_c);
             if (end_word == -1)
-                return (free(temp), 0);
+                return (free(temp), expand_multi_vars(head), 0);
             free(temp);
             inputString += end_word;
         }
@@ -106,6 +105,8 @@ int	pars_error(char *str)
 
 	command = NULL;
 	inpStr = ft_strtrim(str, " ");
+	if (!inpStr || !*inpStr)
+		return (0);
 	if (*inpStr == '|' || *inpStr == ';')
 	{
 		printf("minishell: syntax error near unexpected token `%c'\n", *(str));
@@ -122,11 +123,15 @@ int	pars_error(char *str)
 		printf("minishell: syntax error, unclosed quotes\n");
 		return (free(inpStr), 1);
 	}
+	printf("str: %s\n", inpStr);
 	fill_list(inpStr, &command);
-	assign_type(command);
 	print_list(command);
+	assign_type(command);
 	if (check_pars_errors(command))
 		return (free(inpStr), ft_lstclear(&command), 1);
+	t_list	*final;
+	final = create_final_list(&command);
+	print_list(final);
 	return (free(inpStr), ft_lstclear(&command), 0);
 }
 
