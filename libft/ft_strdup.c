@@ -6,25 +6,29 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 14:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/10 14:54:35 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 12:01:56 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s1)
+char    *ft_strdup(const char *s1, bool flag)
 {
-	char	*copy;
-	int		len;
-	//int		i;
+    char    *copy;
+    int        len;
+    int        i;
 
-	len = ft_strlen(s1);
-	//i = 0;
-	copy = (char *)malloc((len + 1) * sizeof(char));
-	if (!copy)
-		return (NULL);
-	ft_strlcpy(copy, s1, len + 1);
-	return (copy);
+    if (!s1)
+        return (NULL);
+    len = ft_strlen(s1);
+    i = 0;
+    copy = (char *)malloc((len + 1) * sizeof(char));
+    if (!copy)
+        return (NULL);
+    ft_strlcpy(copy, s1, len + 1);
+    if (flag == 1)
+        free((char *)s1);
+    return (copy);
 }
 
 char	*ft_strndup(const char *s1, size_t n)

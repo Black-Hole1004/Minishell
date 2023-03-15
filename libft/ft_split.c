@@ -6,13 +6,13 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/09 10:30:40 by ahmaymou          #+#    #+#             */
-/*   Updated: 2022/11/12 14:50:31 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 12:12:08 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	**free_all(char **str)
+char	**free_all(char **str)
 {
 	int	i;
 

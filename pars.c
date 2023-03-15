@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/14 19:25:47 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 13:31:17 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,12 @@
 void	print_list(t_list *list)
 {
 	t_list	*current;
-	int		i = -1;
 
 	current = list;
 	printf("After tokenisation: of str\n");
 	while (current)
 	{
-		printf("{%s:%d}\nSplitted command:\n", current->content, current->type);
-		current->commands = split_string(current->content);
-		while (current->commands[++i])
-			printf("tmp->commands[%d] = %s\n", i, current->commands[i]);
+		printf("{%s:%d}", current->content, current->type);
 		if (current->next)
 			printf("->");
 		current = current->next;

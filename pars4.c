@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:13:54 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/14 19:17:59 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 13:31:07 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@ char	*get_variable(char *str)
 	var2 = ft_substr(str, ft_strlen(var) + 1, ft_strlen(str) - ft_strlen(var));
 	value = getenv(var);
 	if (!value)
-		value = ft_strdup("");
+		value = ft_strdup("", 0);
 	value = ft_strjoin(value, var2, 0);
-	// printf("var2 = %s value = %s\n", var2, value);
 	free(var);
 	free(var2);
 	return (value);
@@ -90,7 +89,6 @@ bool	is_expandable(char *str)
 	int			i;
 	static bool	s_quote_open;
 	static bool	d_quote_open;
-	// static bool	dollar_open;
 
 	i = -1;
 	while (str[++i])
@@ -101,7 +99,6 @@ bool	is_expandable(char *str)
 			d_quote_open = !d_quote_open;
 		if (str[i] == '$' && !s_quote_open)
 			return (true);
-		// printf("s_quote_open = %d d_quote_open = %d\n", s_quote_open, d_quote_open);
 	}
 	return (false);
 }

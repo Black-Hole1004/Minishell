@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 14:58:35 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/14 19:07:23 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/15 13:32:52 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void				*ft_memchr(const void *b, int c, size_t n);
 int					ft_memcmp(const void *b1, const void *b2, size_t n);
 size_t				ft_strlen(const char *s);
 size_t				ft_strlcpy(char *dest, const char *src, size_t dstsize);
+char				*ft_strncpy(char *dst, const char *src, size_t len);
 size_t				ft_strlcat(char *dest, const char *src, size_t dstsize);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strrchr(const char *s, int c);
@@ -46,13 +47,14 @@ int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
 void				*ft_calloc(size_t count, size_t size);
-char				*ft_strdup(const char *str);
+char				*ft_strdup(const char *str, bool to_free);
 void				ft_striteri(char *s, void (*f)(unsigned int, char*));
 
 char				*ft_substr(char const *s, unsigned int start, size_t len);
-char				*ft_strjoin(const char *s1, const char *s2, bool free_s1);
+char				*ft_strjoin(const char *s1, const char *s2, int free_s1);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_split(char const *s, char c);
+char				**free_all(char **str);
 char				*ft_itoa(int n);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void				ft_putchar_fd(char c, int fd);
@@ -69,6 +71,7 @@ typedef struct s_list
 	char			*out_file;
 	char			*delimiter;
 	int				fd;
+	bool			error_open;
 	struct s_list	*next;
 	struct s_list	*prev;
 }					t_list;
