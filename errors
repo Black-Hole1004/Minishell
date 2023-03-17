@@ -1,0 +1,21 @@
+echo $1USER output USER
+
+bash-3.2$ export ld="|     ls   -la |"
+bash-3.2$ $ld
+bash: |: command not found
+bash-3.2$ ls$ld
+bash: ls|: command not found
+bash-3.2$ export ld=">|     ls   -la |"
+bash-3.2$ l$ld
+bash: l>|: command not found
+bash-3.2$ export ld=" >|     ls   -la |"
+bash-3.2$ ls$ld
+ls: -la: No such file or directory
+ls: >|: No such file or directory
+ls: ls: No such file or directory
+ls: |: No such file or directory
+bash-3.2$ 
+
+echo hhhhdhdh > $fkfk | echo kjdkjdjf  > $kkdkdkd | ls
+ls > file1 > file2 < in > file3 > file4 | echo hhhh > file5 < in2 > file6
+whitespaces

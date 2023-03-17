@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:54:39 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 12:37:26 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/16 22:32:07 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,8 @@ char**	split_string(const char* str)
 			start = str + 1;
 			num_tokens++;
 		}
-		str++;
+		str++;							
 	}
 	tokens[num_tokens] = extract_token(start, str);
 	return (tokens[num_tokens + 1] = NULL, tokens);
 }
-
-

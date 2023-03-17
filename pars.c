@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 23:41:28 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/17 17:44:24 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,24 @@
 
 /*temp function */
 
-void	print_list(t_list *list)
+void	print_list(t_list *list, bool flag)
 {
 	t_list	*current;
 
 	current = list;
+	int i = -1;
 	printf("After tokenisation: of str\n");
 	while (current)
 	{
-		printf("{%s:type:%d}", current->content, current->type);
+		i = -1;
+		printf("{content:%s}", current->content);
+		if (flag)
+		{
+			if (current->delims)
+				while (current->delims[++i].delimiter)
+					printf("delim :%d: %s//", i, current->delims[i].delimiter);
+			
+		}
 		if (current->next)
 			printf("->");
 		current = current->next;
@@ -76,8 +85,8 @@ int	fill_list(char *inputString, t_list **head)
 	red_c = 0;
     while (*inputString)
     {
-		if (!(red_c % 2))
-			red_c = 0;
+		// if (!(red_c % 2))
+		// 	red_c = 0;
         if (*inputString == ' ')
             while (*inputString == ' ')
                 inputString++;
@@ -86,7 +95,7 @@ int	fill_list(char *inputString, t_list **head)
             end_word = end_word_index(inputString);
             temp = ft_substr(inputString, 0, end_word);
 			if (what_type(temp) == in_redir || what_type(temp) == trunc
-				|| what_type(temp) == append || what_type(temp) == here_doc)
+				|| what_type(temp) == append)
 				red_c++;
 			add_or_join(head, temp, &temp2, &red_c);
             if (end_word == -1)
@@ -125,13 +134,13 @@ int	pars_error(char *str)
 	}
 	printf("str: %s\n", inpStr);
 	fill_list(inpStr, &command);
-	print_list(command);
 	assign_type(command);
+	print_list(command, 0);
 	if (check_pars_errors(command))
 		return (free(inpStr), ft_lstclear(&command), 1);
 	t_list	*final;
 	final = create_final_list(&command);
-	print_list(final);
+	print_list(final, 1);
 	return (free(inpStr), ft_lstclear(&command),ft_lstclear(&final), 0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 14:58:35 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 19:47:32 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/17 15:13:32 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,12 @@ void				ft_putstr_fd(char *s, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 
+typedef struct s_delimiter
+{
+	char			*delimiter;
+	int				type;
+}					t_delim;
+
 typedef struct s_list
 {
 	char			*content;
@@ -69,9 +75,10 @@ typedef struct s_list
 	int				type;
 	char			*in_file;
 	char			*out_file;
-	char			*delimiter;
-	int				fd;
-	bool			error_open;
+	t_delim			*delims;
+	int				in_fd;
+	int				out_fd;
+	int				_errno;
 	struct s_list	*next;
 	struct s_list	*prev;
 }					t_list;

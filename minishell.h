@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 19:48:03 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/16 13:36:08 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <stdio.h>
+# include <fcntl.h>
+# include <sys/errno.h>
 # include "libft/libft.h"
 
 typedef enum TYPE
