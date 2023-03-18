@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/16 13:36:08 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/18 01:28:38 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef enum TYPE
 }			t_type;
 
 void	prompt(void);
+void	print_error(char c);
 void	echo(char *str, bool option);
 void	pwd(void);
 void	change_dir(char *path);
