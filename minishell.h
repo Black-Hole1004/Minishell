@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 01:28:38 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/18 17:37:12 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ bool	is_expandable(char *str);
 int		count_tokens(const char* str);
 char**	split_string(const char* str);
 char*	extract_token(const char* start, const char *str);
+void	remove_quotes(char *str);
+void	remove_quotes_node(t_list **temp);
 t_list	*create_final_list(t_list **head);
 
 #endif

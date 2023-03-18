@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 19:09:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 01:29:16 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/18 14:35:17 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ int	check_pars_erros2(t_list *temp, char *str)
 		return (print_error(*str), 1);
 	if (temp->type == trunc && !temp->next)
 		return (print_error(*str), 1);
-	if (temp->type == trunc && temp->next && temp->next->type != out_file
-		&& temp->next->type != Pipe)
+	if (temp->type == trunc && temp->next && temp->next->type != out_file)
 		return (print_error(*str), 1);
 	return (0);
 }
