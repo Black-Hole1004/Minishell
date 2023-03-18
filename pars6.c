@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 14:23:00 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 20:20:04 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/18 22:38:08 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	open_fill(t_list **head, t_list **temp, int i)
 	return (i);
 }
 
-// remove_quotes, string like this ls"'hello'"world , should output ls'hello'world, "hel'lo'world" should output hel'lo'world
+
 void	remove_quotes(char *str)
 {
 	int	i;
@@ -176,7 +176,8 @@ void	remove_quotes_node(t_list **temp)
 
     i = -1; 
 	(*temp)->commands = split_string((*temp)->content);
-	if ((*temp)->commands && ft_strcmp((*temp)->commands[0], "export"))
+	if ((*temp)->commands && (*temp)->commands[0]
+		&& ft_strcmp((*temp)->commands[0], "export"))
 	{
 		while ((*temp)->commands[++i])
 			remove_quotes((*temp)->commands[i]);

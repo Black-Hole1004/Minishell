@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:13:54 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/15 21:43:31 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/18 22:38:29 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,18 +91,21 @@ void	expand_multi_vars(t_list **head)
 
 bool	is_expandable(char *str)
 {
-	int			i;
-	static bool	s_quote_open;
-	static bool	d_quote_open;
+	int		i;
+	int		quote;
 
 	i = -1;
+	quote = 0;
 	while (str[++i])
 	{
-		if (str[i] == '\'' && !d_quote_open)
-			s_quote_open = !s_quote_open;
-		else if (str[i] == '\"')
-			d_quote_open = !d_quote_open;
-		if (str[i] == '$' && !s_quote_open)
+		if (str[i] == '\"' || str[i] == '\'')
+		{
+			if (quote == 0)
+				quote = str[i];
+			else if (quote == str[i])
+				quote = 0;
+		}
+		if (str[i] == '$' && (!quote || quote == '\"'))
 			return (true);
 	}
 	return (false);
