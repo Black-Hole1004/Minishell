@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 20:28:25 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/19 22:56:50 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,23 +91,29 @@ void	assign_type(t_list *command)
 void remove_instant_quotes(char* str)
 {
     int		i;
-	bool	quote;
+	bool	s_quote;
+	bool	d_quote;
 	int		j;
 
 	i = 0;
 	j = 0;
-	quote = false;
+	s_quote = false;
+	d_quote = false;
     while (str[i])
 	{
-        if ((str[i] == '"' || str[i] == '\'') && !quote
-			&& str[i + 1] && str[i + 1] == str[i])
-            i += 2;
-		else if ((str[i] == '"' || str[i] == '\'')
-			&& str[i + 1] && str[i + 1] != str[i])
+        if (str[i] == '"' || str[i] == '\'')
+		{
+			if (!s_quote && str[i + 1] && str[i + 1] == str[i] && !d_quote)
+            	i += 2;
+			else
 			{
-				str[j++] = str[i++];
-				quote = !quote;
+					str[j++] = str[i++];
+				if (str[i] == '\'')
+					s_quote = !s_quote;
+				else
+					d_quote = !d_quote;
 			}
+		}
 		else
         	str[j++] = str[i++];
     }
@@ -184,8 +190,8 @@ int	pars_error(char *str)
 		printf("minishell: syntax error, unclosed quotes\n");
 		return (free(inpStr), 1);
 	}
-	printf("str: %s\n", inpStr);
 	fill_list(inpStr, &command);
+	printf("str: %s\n", inpStr);
 	assign_type(command);
 	print_list(command, 0);
 	if (check_pars_errors(command))

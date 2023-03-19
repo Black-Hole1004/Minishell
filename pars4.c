@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:13:54 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 22:38:29 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/19 23:17:54 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,14 @@ char	*get_variable(char *str)
 	char	*value;
 
 	i = 0;
-	while (str[i + 1] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
-		i++;
-	var = ft_substr(str, 1, i);
+	if (ft_isdigit(str[1]))
+		var = ft_substr(str, 1, 1);
+	else
+	{
+		while (str[i + 1] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
+			i++;
+		var = ft_substr(str, 1, i);
+	}
 	var2 = ft_substr(str, ft_strlen(var) + 1, ft_strlen(str) - ft_strlen(var));
 	value = getenv(var);
 	if (!value)
@@ -33,42 +38,60 @@ char	*get_variable(char *str)
 	return (value);
 }
 
-bool	var_exist(char *str)
+int	var_exist(char *str)
 {
 	int		i;
+	int		count;
 
 	i = -1;
+	count = 0;
 	while (str[++i])
 	{
 		if (str[i] == '$')
 		{
 			if (ft_isalnum(str[i + 1]) || str[i + 1] == '_')
-				return (true);
+				count++;
 		}
 	}
-	return (false);
+	return (count);
 }
 
-void	expand_variables(t_list *tmp)
+void	expand_variables(t_list *tmp, int pos)
 {
 	char	*value;
 	char	*tmp_str;
 	int		i;
 
+	i = pos;
+	tmp_str = ft_substr((tmp->content), 0, i);
+	value = get_variable((tmp->content) + i);
+	free(tmp->content);
+	tmp->content = ft_strjoin(tmp_str, value, 1);
+	free(value);
+}
+
+void	remove_spaces(char *str)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+	bool	quote;
+
 	i = 0;
-	if (!is_expandable((tmp->content)))
-		return ;
-	while ((tmp->content)[i] != '$' && (tmp->content)[i])
-		i++;
-	if ((tmp->content)[i] == '$')
+	j = 0;
+	tmp = ft_strdup(str, 0);
+	quote = false;
+	while (tmp[i])
 	{
-		tmp_str = ft_substr((tmp->content), 0, i);
-		value = get_variable((tmp->content) + i);
-		i--;
-		free(tmp->content);
-		tmp->content = ft_strjoin(tmp_str, value, 1);
-		free(value);
+		if (tmp[i] == '\"' || tmp[i] == '\'')
+			quote = !quote;
+		if (tmp[i] == ' ' && tmp[i + 1] == ' ' && !quote)
+			i++;
+		else
+			str[j++] = tmp[i++];
 	}
+	str[j] = '\0';
+	free(tmp);
 }
 
 void	expand_multi_vars(t_list **head)
@@ -82,20 +105,22 @@ void	expand_multi_vars(t_list **head)
 			tmp = tmp->next;
 		if (tmp)
 		{
-			while (var_exist(tmp->content) && is_expandable(tmp->content))
-				expand_variables(tmp);
+			check_and_expand(tmp);
+			remove_spaces(tmp->content);
 			tmp = tmp->next;
 		}
 	}
 }
 
-bool	is_expandable(char *str)
+void	check_and_expand(t_list *tmp)
 {
 	int		i;
 	int		quote;
+	char	*str;
 
 	i = -1;
 	quote = 0;
+	str = tmp->content;
 	while (str[++i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
@@ -105,8 +130,14 @@ bool	is_expandable(char *str)
 			else if (quote == str[i])
 				quote = 0;
 		}
-		if (str[i] == '$' && (!quote || quote == '\"'))
-			return (true);
+		if (str[i] == '$' && (!quote || quote == '\"')
+			&& str[i + 1] && (ft_isalnum(str[i + 1])
+			|| str[i + 1] == '_'))
+		{
+			expand_variables(tmp, i);
+			str = tmp->content;
+			i = -1;
+			quote = 0;
+		}
 	}
-	return (false);
 }

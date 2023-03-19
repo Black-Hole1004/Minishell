@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   pars5.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:54:39 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 16:39:58 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/19 17:09:54 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*
+	if (quote == 0)
+		quote = str[i];
+	else if (quote == str[i])
+		quote = 0;*/
 int count_tokens(const char* str)
 {
 	int count;
@@ -23,8 +28,13 @@ int count_tokens(const char* str)
 	count = 0;
 	while (*p != '\0')
 	{
-		if (*p == '\"')
-			in_quotes = !in_quotes;
+		if (*p == '\"' || *p == '\'')
+		{
+			if (in_quotes == 0)
+				in_quotes = *p;
+			else if (in_quotes == *p)
+				in_quotes = 0;
+		}
 		else if (*p == ' ' && !in_quotes)
 			count++;
 		p++;
@@ -47,7 +57,7 @@ char*	extract_token(const char* start, const char *str)
 char**	split_string(const char* str)
 {
 	int			num_tokens;
-	bool		in_quotes;
+	int			in_quotes;
 	const char*	start;
 	char**		tokens;
 
@@ -58,7 +68,12 @@ char**	split_string(const char* str)
 	while (*str != '\0')
 	{
 		if (*str == '\'' || *str == '\"')
-			in_quotes = !in_quotes;
+		{
+			if (in_quotes == 0)
+				in_quotes = *str;
+			else if (in_quotes == *str)
+				in_quotes = 0;
+		}
 		else if (*str == ' ' && !in_quotes)
 		{
 			tokens[num_tokens] = extract_token(start, str);
