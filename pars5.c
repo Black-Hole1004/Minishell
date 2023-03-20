@@ -3,25 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   pars5.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:54:39 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/19 17:09:54 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/20 17:35:34 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-	if (quote == 0)
-		quote = str[i];
-	else if (quote == str[i])
-		quote = 0;*/
-int count_tokens(const char* str)
+int	count_tokens(const char *str)
 {
-	int count;
-	int in_quotes;
-	const char* p;
+	int			count;
+	int			in_quotes;
+	const char	*p;
 
 	in_quotes = 0;
 	p = str;
@@ -42,29 +37,37 @@ int count_tokens(const char* str)
 	return (count + 1);
 }
 
-char*	extract_token(const char* start, const char *str)
+char	*extract_token(const char *start, const char *str)
 {
-	char* 	token;
+	char	*token;
 	int		len;
 
 	len = str - start;
 	token = malloc((len + 1) * sizeof(char));
 	ft_strncpy(token, start, len);
 	token[len] = '\0';
-	return token;
+	return (token);
 }
 
-char**	split_string(const char* str)
+int	init_split_string(const char *str, int *nt, int *in_q, char **t)
 {
-	int			num_tokens;
-	int			in_quotes;
-	const char*	start;
-	char**		tokens;
+	*nt = 0;
+	*in_q = 0;
+	t = malloc(count_tokens(str) * sizeof(char *));
+	if (!t)
+		return (0);
+	return (1);
+}
 
-	in_quotes = 0;
-	num_tokens = 0;
-	tokens = malloc(count_tokens(str) * sizeof(char*));
-	start = &str[0];
+char	**split_string(const char *str, int in_quotes, int num_tokens)
+{
+	const char	*start;
+	char		**tokens;
+
+	tokens = malloc(count_tokens(str) * sizeof(char *));
+	if (!tokens)
+		return (NULL);
+	start = str;
 	while (*str != '\0')
 	{
 		if (*str == '\'' || *str == '\"')
@@ -76,12 +79,10 @@ char**	split_string(const char* str)
 		}
 		else if (*str == ' ' && !in_quotes)
 		{
-			tokens[num_tokens] = extract_token(start, str);
+			tokens[num_tokens++] = extract_token(start, str);
 			start = str + 1;
-			num_tokens++;
 		}
-		str++;							
+		str++;
 	}
-	// tokens[num_tokens] = extract_token(start, str);
 	return (tokens[num_tokens] = NULL, tokens);
 }

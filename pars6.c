@@ -6,11 +6,26 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 14:23:00 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/18 22:38:08 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/20 21:42:36 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_node(t_list **node, int to_free)
+{
+	t_list	*temp;
+	int		i;
+
+	i = -1;
+	temp = (*node)->next;
+	if ((*node)->content && to_free)
+		free((*node)->content);
+	// while ((*node)->delims[++i].delimiter)
+	// 	free((*node)->delims[i].delimiter);
+	free((*node));
+	(*node) = temp;
+}
 
 int	count_commands(t_list *temp)
 {
@@ -36,18 +51,23 @@ t_type	which_delimiter(char *str)
 
 int	open_out_file(t_list **head, t_list **temp, char *file_name)
 {
-	if ((*head)->prev->type == trunc)
-		(*temp)->out_fd = open(file_name, O_WRONLY|O_CREAT|O_TRUNC, 0644);
-	else if ((*head)->prev->type == append)
-		(*temp)->out_fd = open(file_name, O_WRONLY|O_CREAT|O_APPEND, 0644);
-	if ((*temp)->out_fd == -1)
-		return ((*temp)->_errno = errno, 1);
-	else
+	if ((*temp)->out_fd != -2 && !(*temp)->_errno)
+		close((*temp)->out_fd);
+	if ((*head)->prev->type == trunc && !(*temp)->_errno)
+		(*temp)->out_fd = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if ((*head)->prev->type == append && !(*temp)->_errno)
+		(*temp)->out_fd = open(file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if ((*temp)->out_fd == -1 && !(*temp)->_errno)
+		return (free((*temp)->out_file)
+			, (*temp)->out_file = file_name, (*temp)->_errno = errno, 1);
+	if (!(*temp)->_errno)
 	{
 		if ((*temp)->out_file)
 			free((*temp)->out_file);
 		(*temp)->out_file = file_name;
 	}
+	else
+		free(file_name);
 	return (0);
 }
 
@@ -59,25 +79,30 @@ int	open_files(t_list **head, t_list **temp)
 	remove_quotes(file_name);
 	if ((*head)->prev->type == in_redir)
 	{
-		(*temp)->in_fd = open(file_name, O_RDONLY);
-		if ((*temp)->in_fd == -1)
-			return ((*temp)->_errno = errno, 1);
-		else
+		if ((*temp)->in_fd != -2 && !(*temp)->_errno)
+			close((*temp)->in_fd);
+		if (!(*temp)->_errno)
+			(*temp)->in_fd = open(file_name, O_RDONLY);
+		if ((*temp)->in_fd == -1 && !(*temp)->_errno)
+			return (free((*temp)->in_file)
+				, (*temp)->in_file = file_name, (*temp)->_errno = errno, 1);
+		if (!(*temp)->_errno)
 		{
 			if ((*temp)->in_file)
 				free((*temp)->in_file);
 			(*temp)->in_file = file_name;
 		}
+		else
+			free(file_name);
 	}
 	else
-        if (open_out_file(head, temp, file_name))
-            return (1);
+		return (open_out_file(head, temp, file_name));
 	return (0);
 }
 
-int    count_delimiter(t_list *temp)
+int	count_delimiter(t_list *temp)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	while (temp && temp->type != Pipe)
@@ -92,25 +117,18 @@ int    count_delimiter(t_list *temp)
 int	open_fill(t_list **head, t_list **temp, int i)
 {
 	if ((*head)->type == in_file || (*head)->type == out_file)
-	{
-		if (open_files(head, temp))
-		{
-			while ((*head) && (*head)->type != Pipe)
-				(*head) = (*head)->next;
-			return (-2);
-		}
-	}
+		open_files(head, temp);
 	else if ((*head)->type == delimiter)
 	{
 		(*temp)->delims[++i].type = which_delimiter((*head)->content);
 		(*temp)->delims[i].delimiter = (*head)->content;
 	}
 	if (*head)
-		(*head) = (*head)->next;
+		free_node(head, ((*head)->type != delimiter
+				&& (*head)->type != in_file && (*head)->type != out_file));
 	(*temp)->type = word;
 	return (i);
 }
-
 
 void	remove_quotes(char *str)
 {
@@ -138,6 +156,19 @@ void	remove_quotes(char *str)
 	str[j] = '\0';
 }
 
+void	finish_node(t_list **final, t_list *temp, int i)
+{
+	if (i == -1)
+	{
+		free(temp->delims);
+		temp->delims = NULL;
+	}
+	else
+		temp->delims[++i].delimiter = NULL;
+	remove_quotes_node(&temp);
+	ft_lstadd_back(final, temp);
+}
+
 void	get_node(t_list **head, t_list **final)
 {
 	t_list	*temp;
@@ -146,7 +177,7 @@ void	get_node(t_list **head, t_list **final)
 	temp = ft_lstnew(ft_strdup("", 0));
 	i = -1;
 	if (*head && (*head)->type == Pipe)
-		(*head) = (*head)->next;
+		free_node(head, 1);
 	temp->delims = malloc(count_delimiter(*head) * sizeof(t_delim));
 	while ((*head) && (*head)->type != Pipe)
 	{
@@ -162,39 +193,37 @@ void	get_node(t_list **head, t_list **final)
 			break ;
 		}
 	}
-	if (i == -1)
-		temp->delims = NULL;
-	else
-		temp->delims[++i].delimiter = NULL;
-	remove_quotes_node(&temp);
-	ft_lstadd_back(final, temp);
+	finish_node(final, temp, i);
 }
 
 void	remove_quotes_node(t_list **temp)
 {
 	int	i;
+	int	in_quotes;
+	int	num_tokens;
 
-    i = -1; 
-	(*temp)->commands = split_string((*temp)->content);
+	i = -1;
+	in_quotes = 0;
+	num_tokens = 0;
+	printf("content :%s\n", (*temp)->content);
+	(*temp)->commands = split_string((*temp)->content, in_quotes, num_tokens);
 	if ((*temp)->commands && (*temp)->commands[0]
 		&& ft_strcmp((*temp)->commands[0], "export"))
 	{
 		while ((*temp)->commands[++i])
 			remove_quotes((*temp)->commands[i]);
 	}
-	// remove_quotes((*temp)->out_file);
-	// remove_quotes((*temp)->in_file);
 	i = -1;
 	if ((*temp)->delims)
 	{
 		while ((*temp)->delims[++i].delimiter)
-            remove_quotes((*temp)->delims[i].delimiter);
+			remove_quotes((*temp)->delims[i].delimiter);
 	}
 }
 
 t_list	*create_final_list(t_list **head)
 {
-	t_list  *final;
+	t_list	*final;
 	int		count;
 
 	final = NULL;

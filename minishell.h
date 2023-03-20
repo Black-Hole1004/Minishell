@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/19 22:59:53 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/20 20:26:22 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,19 @@
 
 typedef enum TYPE
 {
-	word,/*0*/
-	trunc,/*1*/
-	here_doc,/*2*/
-	in_redir,/*3*/
-	delimiter,/*4*/
-	in_file,/*5*/
-	append,/*6*/
-	out_file,/*7*/
-	Pipe,/*8*/
-	_delimiter/*9*/
+	word,
+	trunc,
+	here_doc,
+	in_redir,
+	delimiter,
+	in_file,
+	append,
+	out_file,
+	Pipe,
+	_delimiter
 }			t_type;
+
+extern int	g_exit_status;
 
 void	prompt(void);
 void	print_error(char c);
@@ -58,11 +60,12 @@ int		check_pars_erros2(t_list *temp, char *str);
 void	expand_variables(t_list *head, int pos);
 void	expand_multi_vars(t_list **head);
 void	check_and_expand(t_list *tmp);
-int		count_tokens(const char* str);
-char**	split_string(const char* str);
-char*	extract_token(const char* start, const char *str);
+int		count_tokens(const char *str);
+char	**split_string(const char *str, int in_quotes, int num_tokens);
+char	*extract_token(const char *start, const char *str);
 void	remove_quotes(char *str);
 void	remove_quotes_node(t_list **temp);
 t_list	*create_final_list(t_list **head);
+void	free_node(t_list **node, int to_free);
 
 #endif
