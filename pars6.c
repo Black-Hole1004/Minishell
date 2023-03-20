@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars6.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 14:23:00 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 21:42:36 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/20 23:11:38 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 void	free_node(t_list **node, int to_free)
 {
 	t_list	*temp;
-	int		i;
 
-	i = -1;
 	temp = (*node)->next;
 	if ((*node)->content && to_free)
 		free((*node)->content);

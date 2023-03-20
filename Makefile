@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+         #
+#    By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/09 14:24:42 by ahmaymou          #+#    #+#              #
-#    Updated: 2023/03/20 19:49:49 by ahmaymou         ###   ########.fr        #
+#    Updated: 2023/03/20 23:32:45 by blackhole        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ ifeq ($(OS),Darwin)
 	READLINE_LIB = -L $(shell brew --prefix readline)/lib
 endif
 
-FLAGS = -Wall -Werror -Wextra #-g -fsanitize=address
+FLAGS = -Wall -Werror -Wextra -g -fsanitize=address
 
 CC = cc
 

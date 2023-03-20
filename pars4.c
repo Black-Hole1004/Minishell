@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:13:54 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 22:11:45 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/20 23:26:50 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,14 @@ char	*get_variable(char *str)
 	}
 	var2 = ft_substr(str, ft_strlen(var) + 1, ft_strlen(str) - ft_strlen(var));
 	if (str[1] != '?')
-		value = getenv(var);
+		value = ft_strdup(getenv(var), 0);
 	else
 		value = ft_itoa(g_exit_status);
 	if (!value)
 		value = ft_strdup("", 0);
-	value = ft_strjoin(value, var2, 0);
+	value = ft_strjoin(value, var2, 1);
 	return (free(var), free(var2), value);
 }
-
-// int	var_exist(char *str)
-// {
-// 	int		i;
-// 	int		count;
-
-// 	i = -1;
-// 	count = 0;
-// 	while (str[++i])
-// 	{
-// 		if (str[i] == '$')
-// 		{
-// 			if (ft_isalnum(str[i + 1]) || str[i + 1] == '_')
-// 				count++;
-// 		}
-// 	}
-// 	return (count);
-// }
 
 void	expand_variables(t_list *tmp, int pos)
 {
