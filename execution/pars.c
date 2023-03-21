@@ -6,11 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/21 15:45:45 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 21:41:39 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 /*temp function */
 
@@ -35,9 +35,6 @@ void    print_list(t_list *list, bool flag)
         printf("{delims:%p}\n", current->delims);
         if (flag)
         {
-			// printf("delims[0]:%p\n", current->delims[0].delimiter);
-			// printf("delims[0]:%p\n", current->delims[1].delimiter);
-			// printf("delims[0]:%p\n", current->delims[2].delimiter);
             if (current->delims)
 			{
                 while (current->delims[i].delimiter != NULL)
@@ -50,7 +47,6 @@ void    print_list(t_list *list, bool flag)
 			}
             
         }
-        //print char **commands in list
         if (current->commands)
         {
             int j = -1;
@@ -90,9 +86,10 @@ void	assign_type(t_list *command)
 		temp->type = what_type(cmd);
 		if (temp->prev && temp->type == word && temp->prev->type == in_redir)
 			temp->type = in_file;
-		else if (temp->prev && temp->type == word
-			&& (temp->prev->type == trunc || temp->prev->type == append))
-			temp->type = out_file;
+		else if (temp->prev && temp->type == word && temp->prev->type == trunc)
+			temp->type = tr_out_file;
+		else if (temp->prev && temp->type == word && temp->prev->type == append)
+			temp->type = app_out_file;
 		else if (temp->prev && temp->type == word
 			&& temp->prev->type == here_doc)
 			temp->type = delimiter;
@@ -137,26 +134,3 @@ void	remove_instant_quotes(char *str)
 	str[j] = '\0';
 }
 
-void	prompt(void)
-{
-	char	*str;
-
-	signal(SIGINT, handle_kill);
-	signal(SIGQUIT, handle_kill);
-	while (1)
-	{
-		str = readline("\033[1;32mminishell> \033[0m");
-		if (!str || !ft_strncmp(str, "exit", 4))
-		{
-			clear_history();
-			exit(1);
-		}
-		if (!ft_strncmp(str, "cd", 2))
-			chdir(str + 3);
-		else if (!ft_strncmp(str, "pwd", 3))
-			printf("%s\n", getcwd(NULL, 0));
-		pars_error(str);
-		add_history(str);
-		free(str);
-	}
-}

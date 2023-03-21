@@ -6,11 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:33:22 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/21 15:44:52 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 18:06:05 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	fill_list(char *inputString, t_list **head)
 {
@@ -23,7 +23,7 @@ int	fill_list(char *inputString, t_list **head)
 	red_c = 0;
 	while (*inputString)
 	{
-		while (*inputString == ' ')
+		while (*inputString == ' ' || *inputString == '\t')
 			inputString++;
 		end_word = end_word_index(inputString);
 		temp = ft_substr(inputString, 0, end_word);
@@ -80,19 +80,19 @@ void	free_final_list(t_list *final)
 	}
 }
 
-int	fill_check_final(char *inpstr, t_list **final, t_list **command)
+int	fill_check_final(char *inpstr, t_list **final, t_list **command, t_infos *infos)
 {
 	fill_list(inpstr, command);
 	assign_type(*command);
 	if (check_pars_errors(*command))
 		return (free(inpstr), ft_lstclear(command), 1);
-	expand_multi_vars(command);
+	expand_multi_vars(command, infos);
 	*final = create_final_list(command);
-	print_list(*final, 1);
+	// print_list(*final, 1);
 	return (0);
 }
 
-t_list	*pars_error(char *str)
+t_list	*pars_error(char *str, t_infos *infos)
 {
 	t_list	*command;
 	t_list	*final;
@@ -100,7 +100,6 @@ t_list	*pars_error(char *str)
 
 	command = NULL;
 	inpstr = ft_strtrim(str, " ");
-	printf("str : %s\n", inpstr);
 	if (!inpstr || !*inpstr)
 		return (free(inpstr), NULL);
 	if (*inpstr == '|' || *inpstr == ';')
@@ -115,7 +114,7 @@ t_list	*pars_error(char *str)
 		printf("minishell: syntax error, unclosed quotes\n");
 		return (free(inpstr), NULL);
 	}
-	if (fill_check_final(inpstr, &final, &command))
+	if (fill_check_final(inpstr, &final, &command, infos))
 		return (NULL);
-	return (free(inpstr), free_final_list(final), final);
+	return (free(inpstr), final);
 }

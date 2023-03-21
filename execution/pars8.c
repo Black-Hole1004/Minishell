@@ -6,11 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:35:45 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/21 15:43:08 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 18:12:26 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	get_node(t_list **head, t_list **final)
 {
@@ -48,14 +48,9 @@ void	remove_quotes_node(t_list **temp)
 	i = -1;
 	in_quotes = 0;
 	num_tokens = 0;
-	printf("content :%s\n", (*temp)->content);
 	(*temp)->commands = split_string((*temp)->content, in_quotes, num_tokens);
-	if ((*temp)->commands && (*temp)->commands[0]
-		&& ft_strcmp((*temp)->commands[0], "export"))
-	{
-		while ((*temp)->commands[++i])
-			remove_quotes((*temp)->commands[i]);
-	}
+	while ((*temp)->commands[++i])
+		remove_quotes((*temp)->commands[i]);
 	i = -1;
 	if ((*temp)->delims)
 	{
@@ -71,7 +66,6 @@ t_list	*create_final_list(t_list **head)
 
 	final = NULL;
 	count = count_commands(*head);
-	printf("count :%d\n", count);
 	while (count--)
 		get_node(head, &final);
 	return (final);

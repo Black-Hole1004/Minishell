@@ -6,11 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 18:19:04 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 16:26:07 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 17:41:30 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	handle_kill(int sig)
 {
@@ -50,7 +50,7 @@ bool	count_quotes(char *str)
 
 bool	is_spec(char str)
 {
-	if (str == '<' || str == '>' || str == '|' || str == ' ')
+	if (str == '<' || str == '>' || str == '|' || str == ' ' || str == '\t')
 		return (true);
 	else
 		return (false);

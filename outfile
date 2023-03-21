@@ -1,0 +1,19 @@
+total 384
+drwxr-xr-x  18 ahmaymou  candidate     612 Mar 21 21:47 .
+drwxr-xr-x  10 ahmaymou  candidate     340 Mar 21 17:36 ..
+drwxr-xr-x  13 ahmaymou  candidate     442 Mar 21 16:09 .git
+-rw-r--r--   1 ahmaymou  candidate    2225 Mar 21 21:24 Makefile
+-rw-r--r--   1 ahmaymou  candidate      36 Mar 21 17:00 README.md
+drwxr-xr-x  18 ahmaymou  candidate     612 Mar 21 21:47 builtin_functions
+drwxr-xr-x  25 ahmaymou  candidate     850 Mar 21 21:47 execution
+drwxr-xr-x   8 ahmaymou  candidate     272 Mar 21 21:47 ft_printf
+-rw-r--r--   1 ahmaymou  candidate     986 Mar 21 17:00 initialize_data.c
+-rw-r--r--   1 ahmaymou  candidate    3040 Mar 21 21:47 initialize_data.o
+drwxr-xr-x  94 ahmaymou  candidate    3196 Mar 21 21:47 libft
+-rw-r--r--   1 ahmaymou  candidate    7280 Mar 21 21:47 libftprintf.a
+-rwxr-xr-x   1 ahmaymou  candidate  153208 Mar 21 21:47 minishell
+drwxr-xr-x   3 ahmaymou  candidate     102 Mar 21 21:47 minishell.dSYM
+-rw-r--r--   1 ahmaymou  candidate    5847 Mar 21 21:39 minishell.h
+-rw-r--r--   1 ahmaymou  candidate    2982 Mar 21 17:00 minishell_main.c
+-rw-r--r--   1 ahmaymou  candidate       0 Mar 21 21:48 outfile
+-rw-r--r--   1 ahmaymou  candidate       9 Mar 21 17:36 test

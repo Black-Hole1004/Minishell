@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   initialize_data.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/04 12:24:53 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 18:12:51 by ahmaymou         ###   ########.fr       */
+/*   Created: 2023/03/06 21:35:55 by arabiai           #+#    #+#             */
+/*   Updated: 2023/03/21 16:18:58 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_exit_status = 1337;
-
-int	main(void)
+void initt(t_infos *infos)
 {
-	prompt();
+	(void)infos;
+	infos->my_envp = NULL;
 }
+

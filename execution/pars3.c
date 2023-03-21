@@ -6,11 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 19:09:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 19:22:32 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 21:45:38 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	print_error(char c)
 {
@@ -49,7 +49,8 @@ int	check_pars_erros2(t_list *temp, char *str)
 		return (print_error(*str), 1);
 	if (temp->type == trunc && !temp->next)
 		return (print_error(*str), 1);
-	if (temp->type == trunc && temp->next && temp->next->type != out_file)
+	if (temp->type == trunc && temp->next && (temp->next->type != tr_out_file
+			&& temp->next->type != app_out_file))
 		return (print_error(*str), 1);
 	return (0);
 }
@@ -60,7 +61,7 @@ int	check_pars_errors3(t_list *temp, char *str)
 		&& temp->next->type != in_file && temp->next->type != trunc)
 		return (print_error(*str), 1);
 	if (temp->type == append && temp->next && temp->next->type != word
-		&& temp->next->type != out_file)
+		&& temp->next->type != tr_out_file && temp->next->type != app_out_file)
 		return (print_error(*str), 1);
 	if (check_pars_erros2(temp, str))
 		return (print_error(*str), 1);

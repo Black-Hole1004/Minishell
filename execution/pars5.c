@@ -6,11 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:54:39 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 17:35:34 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 17:42:31 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	count_tokens(const char *str)
 {
@@ -30,7 +30,7 @@ int	count_tokens(const char *str)
 			else if (in_quotes == *p)
 				in_quotes = 0;
 		}
-		else if (*p == ' ' && !in_quotes)
+		else if ((*p == ' ' || *p == '\t') && !in_quotes)
 			count++;
 		p++;
 	}
@@ -77,7 +77,7 @@ char	**split_string(const char *str, int in_quotes, int num_tokens)
 			else if (in_quotes == *str)
 				in_quotes = 0;
 		}
-		else if (*str == ' ' && !in_quotes)
+		else if ((*str == ' ' || *str == '\t') && !in_quotes)
 		{
 			tokens[num_tokens++] = extract_token(start, str);
 			start = str + 1;
