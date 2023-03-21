@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 20:26:22 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 15:46:37 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,8 @@ typedef enum TYPE
 extern int	g_exit_status;
 
 void	prompt(void);
+t_list	*pars_error(char *str);
 void	print_error(char c);
-void	echo(char *str, bool option);
-void	pwd(void);
-void	change_dir(char *path);
 void	handle_kill(int sig);
 bool	count_quotes(char *str);
 int		end_word_index(char *str);
@@ -67,5 +65,14 @@ void	remove_quotes(char *str);
 void	remove_quotes_node(t_list **temp);
 t_list	*create_final_list(t_list **head);
 void	free_node(t_list **node, int to_free);
+void	print_list(t_list *list, bool flag);
+int		open_fill(t_list **head, t_list **temp, int i);
+int		open_out_file(t_list **head, t_list **temp, char *file_name);
+int		open_files(t_list **head, t_list **temp);
+int		count_delimiter(t_list *temp);
+t_type	which_delimiter(char *str);
+void	finish_node(t_list **final, t_list *temp, int i);
+int		count_commands(t_list *temp);
+int		fill_check_final(char *inpstr, t_list **final, t_list **command);
 
 #endif

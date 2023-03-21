@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 14:58:35 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 19:26:39 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/21 13:21:45 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void				ft_putnbr_fd(int n, int fd);
 typedef struct s_delimiter
 {
 	char			*delimiter;
+	char			*tmp_file;
 	int				type;
 }					t_delim;
 

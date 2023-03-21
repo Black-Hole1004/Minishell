@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars6.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 14:23:00 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/20 23:11:38 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/21 15:34:58 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 void	free_node(t_list **node, int to_free)
 {
 	t_list	*temp;
+	int		i;
 
+	i = -1;
 	temp = (*node)->next;
 	if ((*node)->content && to_free)
 		free((*node)->content);
-	// while ((*node)->delims[++i].delimiter)
-	// 	free((*node)->delims[i].delimiter);
 	free((*node));
 	(*node) = temp;
 }
@@ -96,138 +96,4 @@ int	open_files(t_list **head, t_list **temp)
 	else
 		return (open_out_file(head, temp, file_name));
 	return (0);
-}
-
-int	count_delimiter(t_list *temp)
-{
-	int	count;
-
-	count = 0;
-	while (temp && temp->type != Pipe)
-	{
-		if (temp->type == delimiter)
-			count++;
-		temp = temp->next;
-	}
-	return (count + 1);
-}
-
-int	open_fill(t_list **head, t_list **temp, int i)
-{
-	if ((*head)->type == in_file || (*head)->type == out_file)
-		open_files(head, temp);
-	else if ((*head)->type == delimiter)
-	{
-		(*temp)->delims[++i].type = which_delimiter((*head)->content);
-		(*temp)->delims[i].delimiter = (*head)->content;
-	}
-	if (*head)
-		free_node(head, ((*head)->type != delimiter
-				&& (*head)->type != in_file && (*head)->type != out_file));
-	(*temp)->type = word;
-	return (i);
-}
-
-void	remove_quotes(char *str)
-{
-	int	i;
-	int	j;
-	int	quote;
-
-	i = -1;
-	j = 0;
-	quote = 0;
-	while (str[++i])
-	{
-		if (str[i] == '\"' || str[i] == '\'')
-		{
-			if (quote == 0)
-				quote = str[i];
-			else if (quote == str[i])
-				quote = 0;
-			else
-				str[j++] = str[i];
-		}
-		else
-			str[j++] = str[i];
-	}
-	str[j] = '\0';
-}
-
-void	finish_node(t_list **final, t_list *temp, int i)
-{
-	if (i == -1)
-	{
-		free(temp->delims);
-		temp->delims = NULL;
-	}
-	else
-		temp->delims[++i].delimiter = NULL;
-	remove_quotes_node(&temp);
-	ft_lstadd_back(final, temp);
-}
-
-void	get_node(t_list **head, t_list **final)
-{
-	t_list	*temp;
-	int		i;
-
-	temp = ft_lstnew(ft_strdup("", 0));
-	i = -1;
-	if (*head && (*head)->type == Pipe)
-		free_node(head, 1);
-	temp->delims = malloc(count_delimiter(*head) * sizeof(t_delim));
-	while ((*head) && (*head)->type != Pipe)
-	{
-		if ((*head)->type == word)
-		{
-			temp->content = ft_strjoin(temp->content, (*head)->content, 1);
-			temp->content = ft_strjoin(temp->content, " ", 1);
-		}
-		i = open_fill(head, &temp, i);
-		if (i == -2)
-		{
-			i = -1;
-			break ;
-		}
-	}
-	finish_node(final, temp, i);
-}
-
-void	remove_quotes_node(t_list **temp)
-{
-	int	i;
-	int	in_quotes;
-	int	num_tokens;
-
-	i = -1;
-	in_quotes = 0;
-	num_tokens = 0;
-	printf("content :%s\n", (*temp)->content);
-	(*temp)->commands = split_string((*temp)->content, in_quotes, num_tokens);
-	if ((*temp)->commands && (*temp)->commands[0]
-		&& ft_strcmp((*temp)->commands[0], "export"))
-	{
-		while ((*temp)->commands[++i])
-			remove_quotes((*temp)->commands[i]);
-	}
-	i = -1;
-	if ((*temp)->delims)
-	{
-		while ((*temp)->delims[++i].delimiter)
-			remove_quotes((*temp)->delims[i].delimiter);
-	}
-}
-
-t_list	*create_final_list(t_list **head)
-{
-	t_list	*final;
-	int		count;
-
-	final = NULL;
-	count = count_commands(*head);
-	printf("count :%d\n", count);
-	while (count--)
-		get_node(head, &final);
-	return (final);
 }
