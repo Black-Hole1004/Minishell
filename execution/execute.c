@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 18:39:26 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/22 00:28:46 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/22 12:13:57 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,9 @@ int is_builtin(t_list *node)
 
 void execute_builtin(char **strs, t_infos *infos)
 {
+	int i;
+	
+	i = 0;
 	if (!strs || !strs[0])
 	{
 		free_all(strs);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   multiple_cmds.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:15:35 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/22 00:11:12 by blackhole        ###   ########.fr       */
+/*   Updated: 2023/03/21 21:51:25 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	first_child_process(t_list *final_list, int pipe_ends[2], char **envp, pid_
 	{
 		if (fd_in == -2)
 			fd_in = open(get_last_heredoc_filename(final_list), O_RDONLY);
-		dup2(fd_in, STDIN_FILENO);
+			dup2(fd_in, STDIN_FILENO);
 		if (!strs[0])
 			exit(EXIT_SUCCESS);
 	}
@@ -86,7 +86,7 @@ void	last_child_process(t_list *final_list, char **envp, pid_t pid, t_infos *inf
 	{
 		if (fd_in == -2)
 			fd_in = open(get_last_heredoc_filename(final_list), O_RDONLY);
-		dup2(fd_in, STDIN_FILENO);
+			dup2(fd_in, STDIN_FILENO);
 		if (!strs[0])
 			exit(EXIT_SUCCESS);
 	}
@@ -137,7 +137,7 @@ void	inter_process(t_list *final_list, int pipe_ends[2], char **envp, t_infos *i
 	{
 		if (fd_in == -2)
 			fd_in = open(get_last_heredoc_filename(final_list), O_RDONLY);
-		dup2(fd_in, STDIN_FILENO);
+			dup2(fd_in, STDIN_FILENO);
 		if (!strs[0])
 			exit(EXIT_SUCCESS);
 	}
