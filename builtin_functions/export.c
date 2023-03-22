@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 18:22:16 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/18 22:16:21 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/03/22 00:08:22 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,8 @@ int check_variable_regex(char *str)
 
 void export(t_infos *infos)
 {
-	int i;
 	t_envp *temp;
 
-	i = 0;
 	sort_envp(infos);
 	temp = infos->my_envp;
 	while (temp)
@@ -79,7 +77,7 @@ void add_variable(t_infos *infos, char *var_name, char *var_value)
 	temp = infos->my_envp;
     while (temp)
 	{
-		if (!ft_strncmp(temp->variable_name, var_name, ft_strlen(temp->variable_name)))
+		if (!strcmp(temp->variable_name, var_name))
 		{	
 			if(!var_value)
 				return (free(var_name)) ;
@@ -106,11 +104,9 @@ void add_variable(t_infos *infos, char *var_name, char *var_value)
 
 void export_variable(t_infos *infos, char *string)
 {
-	t_envp 	*temp;
 	char	*var_value;
 	char 	*var_name;
 
-	temp = infos->my_envp;
 	var_name = ft_substr(string, 0, ft_strchr(string, '=') - string);
 	var_value = ft_strchr(string, '=');
 	if (check_variable_regex(var_name))

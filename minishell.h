@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/21 21:39:54 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/22 00:29:39 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <sys/errno.h>
+# include <sys/wait.h>
+# include <sys/types.h>
 # include "libft/libft.h"
 # include "ft_printf/ft_printf.h"
 
@@ -109,9 +111,10 @@ void	execute(t_list *final_list, t_infos *infos);
 int		is_builtin(t_list *node);
 void	execute_builtin(char **strs, t_infos *infos);
 
-
-
-
+/*------------> heredoc--------->*/
+char *get_last_heredoc_filename(t_list *final_list);
+void open_heredoc_file(t_list *final_list, t_infos *infos);
+void handle_multiple_here_docs(t_list *final_list, t_infos *infos);
 
 
 /**AHMAYMOU*/
@@ -125,8 +128,8 @@ typedef enum TYPE
 	delimiter,/*4*/
 	in_file,/*5*/
 	append,/*6*/
-	tr_out_file,
-	app_out_file,/*7*/
+	tr_out_file,/*7*/
+	app_out_file,/*8*/
 	Pipe,/*8*/
 	_delimiter/*9*/
 }			t_type;
@@ -146,7 +149,8 @@ t_type	what_type(char *cmd);
 int		check_pars_errors(t_list *command);
 int		check_pars_syntax(char *str);
 int		check_pars_erros2(t_list *temp, char *str);
-void	expand_variables(t_list *tmp, int pos, t_infos *infos);
+void	expand_variables(t_list *head, int pos, t_infos *infos);
+char	*get_variable(char *str, t_infos *infos);
 void	expand_multi_vars(t_list **head, t_infos *infos);
 void	check_and_expand(t_list *tmp, t_infos *infos);
 int		count_tokens(const char *str);

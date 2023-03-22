@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: blackhole <blackhole@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 18:39:26 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/21 20:27:49 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/22 00:28:46 by blackhole        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ char	*get_command_path(char **paths, char **main_cmd)
     {
         ft_printf(2, "minishell: %s: No such file or directory\n", main_cmd[0]);
         free(cmd);
-		free_all(paths);
+		if (paths)
+			free_all(paths);
 		free_all(main_cmd);
         return (NULL);
     }
@@ -73,16 +74,34 @@ char	*get_command_path(char **paths, char **main_cmd)
 void	child_process_for_one_cmd(t_list *final_list, char **envp, t_infos *infos)
 {
 	int 	fd_in;
+	int		fd_out;
 	char	*path;
 	char	**splited_paths;
 	char 	**strs;
 
 	fd_in = final_list->in_fd;
+	fd_out = final_list->out_fd;
 	strs = final_list->commands;
 	if (final_list->_errno != 0)
 		ft_printf(2, "minishell: %s:\n", strerror(final_list->_errno));
-	dup2(fd_in, STDIN_FILENO);
-	close(fd_in);
+	if (final_list->delims != NULL)
+	{
+		open_heredoc_file(final_list, infos);
+		if (fd_in == -2)
+			fd_in = open(get_last_heredoc_filename(final_list), O_RDONLY);
+		if (!strs[0])
+			exit(EXIT_SUCCESS);
+	}
+	if (fd_in != -2)
+	{
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+	}
+	if (fd_out != -2)
+	{
+		dup2(fd_out, STDOUT_FILENO);
+		close(fd_out);
+	}
 	if (is_builtin(final_list) == 1)
 	{
 		execute_builtin(strs, infos);
@@ -101,6 +120,8 @@ void	child_process_for_one_cmd(t_list *final_list, char **envp, t_infos *infos)
 
 int is_builtin(t_list *node)
 {
+	if (!node->commands || !node->commands[0])
+		return (0);
 	if (ft_strcmp(node->commands[0], "echo") == 0)
 		return (1);
 	if (ft_strcmp(node->commands[0], "cd") == 0)
@@ -120,9 +141,6 @@ int is_builtin(t_list *node)
 
 void execute_builtin(char **strs, t_infos *infos)
 {
-	int i;
-	
-	i = 0;
 	if (!strs || !strs[0])
 	{
 		free_all(strs);
@@ -142,14 +160,13 @@ void execute_builtin(char **strs, t_infos *infos)
 		my_env(infos);
 	else if (!ft_strcmp(strs[0], "exit"))
 		my_exit(strs, infos);
-	// free_all(strs);
 }
 
 void execute_one_cmd(t_list *final_list, char **envp, t_infos *infos)
 {
 	pid_t	pid;
 	
-	if (is_builtin(final_list) == 1)
+	if (is_builtin(final_list) == 1 && !final_list->delims)
 		execute_builtin(final_list->commands, infos);
 	else
 	{
@@ -178,6 +195,9 @@ void execute(t_list *final_list, t_infos *infos)
 	if (ft_lstsize(final_list) == 1)
 		execute_one_cmd(final_list, envp, infos);
 	else
+	{
+		handle_multiple_here_docs(final_list, infos);
 		execute_multiple_cmds(final_list, envp, infos);
+	}
 	ft_free_envp_array(envp);
 }
