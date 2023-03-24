@@ -6,7 +6,7 @@
 #    By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/09 14:24:42 by ahmaymou          #+#    #+#              #
-#    Updated: 2023/03/24 00:45:43 by ahmaymou         ###   ########.fr        #
+#    Updated: 2023/03/24 00:56:17 by ahmaymou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,25 +31,27 @@ BANNER=\
 '                                                                            ▀         ▀         	  '
                                                                                                      
 																									 
-parser = $(addprefix parser/,expansions.c files_opener.c files_opener2.c final_list.c split_cmds.c)
+parser = $(addprefix src/a_parser/,expansions.c files_opener.c files_opener2.c final_list.c split_cmds.c)
 
-lexer = $(addprefix lexer/,fill_check_1st_list.c get_words.c syntax_checker.c syntax_checker2.c)
+lexer = $(addprefix src/a_lexer/,fill_check_1st_list.c get_words.c syntax_checker.c syntax_checker2.c)
 
-execution = $(addprefix execution/,child_processes_helpers.c execute_helpers.c initialize_data.c\
+execution = $(addprefix src/execution/,child_processes_helpers.c execute_helpers.c initialize_data.c\
 		execute_helpers1.c execute.c heredoc_helpers.c heredoc.c multiple_cmds.c multiple_cmds_helpers.c)
 
-ebuiltin_functions = $(addprefix ebuiltin_functions/,echo.c env.c cd.c export.c export_helpers.c\
+ebuiltin_functions = $(addprefix src/ebuiltin_functions/,echo.c env.c cd.c export.c export_helpers.c\
 	cd_helpers1.c unset.c basic_builtins.c env_helpers.c)
 
 SRCS_OBJ = $(execution) $(ebuiltin_functions) $(parser) $(lexer)
 
-SRC = execution/mainex.c
+SRC = src/execution/mainex.c
 
 FLAGS = -Wall -Werror -Wextra
 
+HEADER = src/minishell.h
+
 CC = cc
 
-LIBS = libft/libft.a ft_printf/libftprintf.a
+LIBS = src/libft/libft.a src/ft_printf/libftprintf.a
 
 OS = $(shell uname)
 
@@ -72,26 +74,26 @@ banner2:
 	done ; \
 	echo "$(LIGHTRED)                     Copyright : Black-Hole1004, Abdellrabiai :) \n$(Color_Off)"
 
-%.o: %.c minishell.h
+%.o: %.c $(HEADER)
 	@printf "$(GREEN) Generating minishell objects... %-33.33s\r" $@
 	@$(CC) $(FLAGS) $(READLINE_INC) -c $< -o $@
 
-$(NAME) : $(OBJ) execution/mainex.c minishell.h
+$(NAME) : $(OBJ) $(SRC) $(HEADER)
 	@$(CC) $(FLAGS) $(SRC) $(OBJ) $(LIBS) -lreadline $(READLINE_LIB) -o $(NAME)
 	@echo "\n\n\t$(Cyan) Enjoooy :)\n $(Color_Off)"
 
 libftprintf :
-	@make bonus -C libft/
-	@make -C ft_printf/
+	@make bonus -C src/libft/
+	@make -C src/ft_printf/
 
 clean :
-	@make clean -C libft
-	@make clean -C ft_printf
+	@make clean -C src/libft
+	@make clean -C src/ft_printf
 	@rm -rf $(OBJ)
 
 fclean : clean
-	@make fclean -C libft
-	@make fclean -C ft_printf
+	@make fclean -C src/libft
+	@make fclean -C src/ft_printf
 	@rm -rf $(LIBS) $(NAME)
 	@rm -rf *.dSYM .vscode
 
