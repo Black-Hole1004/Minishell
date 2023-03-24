@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/22 12:15:37 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/03/24 00:06:42 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,13 @@
 # include "libft/libft.h"
 # include "ft_printf/ft_printf.h"
 
+typedef struct s_help // to help with norminette
+{
+	int		i;
+	pid_t	pid;
+	int		size;
+	int		pipe_ends[2];
+} t_help;
 typedef struct s_envp
 {
 	char			*variable_name;
@@ -38,6 +45,8 @@ typedef struct s_infos
 	struct s_envp	*my_envp;
 	int std_in;
 	int std_out;
+	t_help help;
+	int *pids;
 } t_infos;
 
 extern int g_exit_status;
@@ -56,7 +65,7 @@ void    export(t_infos *infos);
 void	swap_envp_nodes(t_envp *tmp_envp, t_envp *tmp);
 void	sort_envp(t_infos *infos);
 void	export_variable(t_infos *infos, char *string);
-void	add_variable(t_infos *infos, char *var_name, char *var_value);
+void	add_variable(t_infos *infos, char *var_name, char *var_value, bool concatenate);
 int		check_variable_regex(char *str);
 char 	*get_variable_value(char *string);
 char	*get_variable_name(char *string);
@@ -78,6 +87,8 @@ char 	*get_envp_value(char *variable_name, t_infos *infos);
 void 	set_envp_value(char *old_variable, char *current_variable, t_infos *infos);
 void	update_shlvl_variable(t_infos *infos);
 void	add_ignored_env(t_infos *infos);
+char	*get_envp_value(char *variable_name, t_infos *infos);
+
 
 /*--------->builtins util funtions <--------*/
 int		check_for_newline_option(char *str);
@@ -85,13 +96,13 @@ void	my_echo(char **strs);
 void    my_pwd(t_infos *infos);
 void	my_cd(char **strs, t_infos *infos);
 void    cd(char *path, t_infos *infos);
-void	my_exit(char **strs, t_infos *infos);
+void	set_envp_value(char *old_variable, char *new_value, t_infos *infos);
+int		print_old_pwd(t_infos *infos);
+void	my_exit(char **strs);
 
 void	builtin_handler(t_list *final_list, t_infos *infos);
 
 /*---------> execution <--------*/
-void	my_execution(t_list *final_list, t_infos *infos);
-// void	execute_using_minishell(t_list *final_list, char *executable, t_infos *infos);
 char	**copy_envp_into_array(t_infos *infos);
 void	print_envp_array(char **envp, t_infos *infos);
 int		get_envp_size(t_envp *envp);
@@ -101,21 +112,35 @@ void	ft_free_envp_array(char **envp);
 char	**get_envpath(char **envp);
 char	*get_command_path(char **paths, char **main_cmd);
 void	execute_one_cmd(t_list *final_list, char **envp, t_infos *infos);
-void	child_process1(t_list *final_list, int pipe_ends[2], char **envp, pid_t pid, t_infos *infos);
-void	child_process2(t_list *final_list , int pipe_ends[2], char **envp, pid_t pid, t_infos *infos);
+void	first_errno_and_open_heredocs(t_list *final_list, char **strs);
+void	first_check_for_inout_output_files(t_list *final_list, int pipe_ends[2]);
+void	last_check_for_input_output_files(t_list *final_list, t_infos *infos);
+void	inter_check_for_input_output_files(t_list *final_list, t_infos *infos);
 
+/**--------------->pipeline------------->*/
 void	execute_multiple_cmds(t_list *final_list, char **envp, t_infos *infos);
 void	execute(t_list *final_list, t_infos *infos);
+void	check_for_inout_output_files(int fd_in, int fd_out);
+char	*get_command_path(char **paths, char **main_cmd);
+char	*return_command_if_found(char **paths, char **main_cmd, char *cmd);
+int		check_command_if_accessible(char *cmd, char **paths);
+int		check_paths_if_null(char **paths, char **main_cmd, char *cmd);
+char	**get_envpath(char **envp);
 int		is_builtin(t_list *node);
 void	execute_builtin(char **strs, t_infos *infos);
+void	redirect_process(int pipe_ends[2]);
+void	create_pipe(int pipe_ends[2]);
+pid_t	my_fork(t_infos *infos, int i);
 
 /*------------> heredoc--------->*/
 char *get_last_heredoc_filename(t_list *final_list);
 void open_heredoc_file(t_list *final_list, t_infos *infos);
 void handle_multiple_here_docs(t_list *final_list, t_infos *infos);
+void open_heredoc_if_found(t_list *final_list, t_infos *infos, char **strs);
+char *check_and_expand_heredoc(char *str, t_infos *infos);
+char *expand_variables_heredoc(char *str, int pos, t_infos *infos);
+void handle_multiple_here_docs(t_list *final_list, t_infos *infos);
 
-
-/**AHMAYMOU*/
 
 typedef enum TYPE
 {

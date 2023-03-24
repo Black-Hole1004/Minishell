@@ -6,16 +6,30 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 13:16:02 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/15 13:50:38 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/03/23 21:51:55 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int get_envp_size(t_envp *envp)
+char	*get_envp_value(char *variable_name, t_infos *infos)
 {
-	int i;
-	t_envp *tmp;
+	t_envp	*tmp;
+
+	tmp = infos->my_envp;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->variable_name, variable_name) == 0)
+			return (tmp->variable_value);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+int	get_envp_size(t_envp *envp)
+{
+	int		i;
+	t_envp	*tmp;
 
 	tmp = envp;
 	i = 0;
@@ -27,10 +41,10 @@ int get_envp_size(t_envp *envp)
 	return (i);
 }
 
-void ft_free_envp_array(char **envp)
+void	ft_free_envp_array(char **envp)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	while (envp[i])
 	{
@@ -40,14 +54,14 @@ void ft_free_envp_array(char **envp)
 	free(envp);
 }
 
-char **copy_envp_into_array(t_infos *infos)
+char	**copy_envp_into_array(t_infos *infos)
 {
-	char **envp;
-	t_envp *tmp;
-	char *string;
-	int i;
-	int envp_size;
-	
+	char	**envp;
+	t_envp	*tmp;
+	char	*string;
+	int		i;
+	int		envp_size;
+
 	i = 0;
 	tmp = infos->my_envp;
 	envp_size = get_envp_size(infos->my_envp);
@@ -63,14 +77,3 @@ char **copy_envp_into_array(t_infos *infos)
 	return (envp);
 }
 
-void print_envp_array(char **envp, t_infos *infos)
-{
-	int i;
-	
-	i = 0;
-	while (i < get_envp_size(infos->my_envp))
-	{
-		ft_printf(1, "%s\n", envp[i]);
-		i++;
-	}
-}

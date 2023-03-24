@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mainex.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:26:09 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/22 19:36:55 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/23 23:50:14 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void    prompt(t_infos *infos)
     char    *str;
 
     signal(SIGINT, handle_kill);
-    signal(SIGQUIT, handle_kill);
+    signal(SIGQUIT, SIG_IGN);
     while (1)
     {
         cwd = getcwd(NULL, 0);
@@ -79,7 +79,7 @@ void    prompt(t_infos *infos)
         cwd = ft_strjoin(tmp, "$ \033[0m", 1);
         cwd = ft_strjoin(cwd, "\033[1;32mbash-9.2$ \033[0m", 1);
 		if (!cwd)
-			cwd = ft_strdup("ana mwader :( $:", 0);
+			cwd = ft_strdup("\033[1;32mbash-9.2$ \033[0m", 0);
         str = readline(cwd);
         free(cwd);
         if (!str)
@@ -95,35 +95,30 @@ void    prompt(t_infos *infos)
     }
 }
 
-void koo(void)
+void execute_using_minishell(char *executable, t_infos *infos)
 {
-	system("leaks minishell");
+	char **strs;
+    char **envp;
+
+	executable = ft_strjoin("bash ", executable, 0);
+	strs = ft_split(executable, ' ');
+    free(executable);
+    envp = copy_envp_into_array(infos);
+    execve("/bin/bash", strs, envp);
+    free_all(strs);
+	exit(127);
 }
 
-void print_env(char **envp)
-{
-	int i;
-	
-	i = 0;
-	while (envp[i])
-	{
-		printf("%s\n", envp[i]);
-		i++;
-	}
-}
 int g_exit_status;
 
 int main(int ac, char **av, char **envp)
 {
-	// atexit(koo);
-	(void)ac;
-	(void)av;
 	t_infos infos;
 	initt(&infos);
 	duplicate_envp(envp, &infos);
 	update_shlvl_variable(&infos);
-	// if (ac >= 2)
-	// 	execute_using_minishell(av[1], &infos);
+	if (ac >= 2)
+		execute_using_minishell(av[1], &infos);
 	prompt(&infos);
 }
 
