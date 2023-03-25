@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pars3.c                                            :+:      :+:    :+:   */
+/*   syntax_checker.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 19:09:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/22 18:59:22 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/24 23:08:06 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	print_error(char c)
 {
-	g_exit_status = 258;
+	g_g.g_exit_status = 258;
 	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 	if (c == '\n')
 		ft_putstr_fd("newline", 2);
@@ -90,31 +90,6 @@ int	check_pars_errors(t_list *command)
 		if (check_pars_errors3(temp, str))
 			return (1);
 		temp = temp->next;
-	}
-	return (0);
-}
-
-int	check_pars_syntax(char *str)
-{
-	t_type	type;
-	int		i;
-
-	i = 0;
-	type = what_type(str);
-	while (str[i])
-	{
-		if (ft_strlen(str + i) > 1 && !ft_strncmp(str + i, "&&", 2))
-			return (print_error(str[i]), 1);
-		if (type == 2 || type == 6)
-			i += 2;
-		else if (!type)
-			return (0);
-		else
-			i += 1;
-		if ((str[i] && what_type(str + i) == type)
-			|| (str[i] && what_type(str + i) == 1 && type == 6)
-			|| (str[i] && what_type(str + i) == 3 && type == 2))
-			return (print_error(str[i]), 1);
 	}
 	return (0);
 }
