@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:18:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/25 21:26:08 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/30 01:57:28 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include <signal.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <sys/errno.h>
-# include <sys/ioctl.h>
 # include "libft/libft.h"
 # include "ft_printf/ft_printf.h"
 
@@ -45,10 +45,12 @@ typedef struct s_envp
 typedef struct s_infos
 {
 	struct s_envp	*my_envp;
+	char			**envp;
 	int				std_in;
 	int				std_out;
 	t_help			help;
 	int				*pids;
+	bool			ignore;
 }	t_infos;
 
 typedef struct s_g
@@ -108,7 +110,7 @@ void	my_cd(char **strs, t_infos *infos);
 void	cd(char *path, t_infos *infos);
 void	set_envp_value(char *old_variable, char *new_value, t_infos *infos);
 int		print_old_pwd(t_infos *infos);
-void	my_exit(char **strs);
+void	my_exit(char **strs, pid_t pid, t_infos *infos);
 
 void	builtin_handler(t_list *final_list, t_infos *infos);
 
@@ -122,6 +124,11 @@ void	ft_free_envp_array(char **envp);
 char	**get_envpath(char **envp);
 char	*get_command_path(char **paths, char **main_cmd);
 void	execute_one_cmd(t_list *final_list, char **envp, t_infos *infos);
+void	execute_simple_cmd(t_list *final_list, char **envp, t_infos *infos);
+void	child_process_for_one_cmd(t_list *final_list,
+			char **envp, t_infos *infos);
+void	execute_simple_cmd(t_list *final_list, char **envp, t_infos *infos);
+int		check_infile_outfile_errors(t_list *final_list);
 void	first_errno_and_open_heredocs(t_list *final_list, char **strs);
 void	first_check_for_inout_output_files(t_list *final_list,
 			int pipe_ends[2]);
@@ -139,8 +146,9 @@ int		check_command_if_accessible(char *cmd, char **paths);
 int		check_paths_if_null(char **paths, char **main_cmd, char *cmd);
 char	**get_envpath(char **envp);
 int		is_builtin(t_list *node);
-void	execute_builtin(char **strs, t_infos *infos, t_list *final_list);
-void	redirect_process(int pipe_ends[2]);
+void	execute_builtin(char **strs, t_infos *infos,
+			t_list *final_list, pid_t pid);
+void	redirect_process(int pipe_ends[2], t_list *tmp);
 void	create_pipe(int pipe_ends[2]);
 pid_t	my_fork(t_infos *infos, int i);
 
@@ -148,7 +156,7 @@ pid_t	my_fork(t_infos *infos, int i);
 char	*get_last_heredoc_filename(t_list *final_list);
 void	open_heredoc_file(t_list *final_list, t_infos *infos);
 void	handle_multiple_here_docs(t_list *final_list, t_infos *infos);
-void	open_heredoc_if_found(t_list *final_list, t_infos *infos, char **strs);
+void	handle_heredoc(t_list *final_list, t_infos *infos);
 char	*check_and_expand_heredoc(char *str, t_infos *infos);
 char	*expand_variables_heredoc(char *str, int pos, t_infos *infos);
 void	handle_multiple_here_docs(t_list *final_list, t_infos *infos);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   multiple_cmds.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:15:35 by arabiai           #+#    #+#             */
-/*   Updated: 2023/03/25 21:44:29 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/03/28 05:02:01 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@ void	first_child_process(t_list *final_list, int pipe_ends[2]
 	char	**splited_paths;
 
 	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, handle_kill);
 	strs = final_list->commands;
 	first_errno_and_open_heredocs(final_list, strs);
 	first_check_for_inout_output_files(final_list, pipe_ends);
 	if (is_builtin(final_list) == 1)
-		execute_builtin(strs, infos, final_list);
+		execute_builtin(strs, infos, final_list, 0);
 	else
 	{
 		splited_paths = get_envpath(envp);
@@ -33,7 +34,10 @@ void	first_child_process(t_list *final_list, int pipe_ends[2]
 			exit(127);
 		execve(path, strs, envp);
 	}
-	exit(EXIT_SUCCESS);
+	if (g_g.g_exit_status != EXIT_FAILURE)
+		exit(EXIT_SUCCESS);
+	else
+		exit(EXIT_FAILURE);
 }
 
 void	last_child_process(t_list *final_list, char **envp, t_infos *infos)
@@ -43,11 +47,12 @@ void	last_child_process(t_list *final_list, char **envp, t_infos *infos)
 	char	**splited_paths;
 
 	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, handle_kill);
 	strs = final_list->commands;
 	first_errno_and_open_heredocs(final_list, strs);
 	last_check_for_input_output_files(final_list, infos);
 	if (is_builtin(final_list) == 1)
-		execute_builtin(strs, infos, final_list);
+		execute_builtin(strs, infos, final_list, 0);
 	else
 	{
 		splited_paths = get_envpath(envp);
@@ -56,7 +61,10 @@ void	last_child_process(t_list *final_list, char **envp, t_infos *infos)
 			exit(127);
 		execve(path, strs, envp);
 	}
-	exit(EXIT_SUCCESS);
+	if (g_g.g_exit_status != EXIT_FAILURE)
+		exit(EXIT_SUCCESS);
+	else
+		exit(EXIT_FAILURE);
 }
 
 void	inter_process(t_list *final_list, int pipe_ends[2]
@@ -67,13 +75,14 @@ void	inter_process(t_list *final_list, int pipe_ends[2]
 	char	**splited_paths;
 
 	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, handle_kill);
 	strs = final_list->commands;
 	if (!strs[0])
 		exit(EXIT_SUCCESS);
 	first_errno_and_open_heredocs(final_list, strs);
 	first_check_for_inout_output_files(final_list, pipe_ends);
 	if (is_builtin(final_list) == 1)
-		execute_builtin(strs, infos, final_list);
+		execute_builtin(strs, infos, final_list, 0);
 	else
 	{
 		splited_paths = get_envpath(envp);
@@ -82,27 +91,33 @@ void	inter_process(t_list *final_list, int pipe_ends[2]
 			exit(127);
 		execve(path, strs, envp);
 	}
-	exit(EXIT_SUCCESS);
+	if (g_g.g_exit_status != EXIT_FAILURE)
+		exit(EXIT_SUCCESS);
+	else
+		exit(EXIT_FAILURE);
 }
 
-void	my_wait_all(int pipe_ends[2], int size, t_infos *infos)
+void	my_wait_all(t_infos *infos, t_list *final_list)
 {
 	int	i;
 
+	(void)final_list;
 	i = 0;
-	close(pipe_ends[0]);
-	close(pipe_ends[1]);
-	while (i < size)
+	close(infos->help.pipe_ends[0]);
+	close(infos->help.pipe_ends[1]);
+	close(final_list->in_fd);
+	close(final_list->out_fd);
+	while (i < infos->help.size)
 	{
 		waitpid(infos->pids[i], &g_g.g_exit_status, 0);
 		i++;
 	}
-	signal(SIGINT, handle_kill);
-	signal(SIGQUIT, SIG_IGN);
 	if (WIFEXITED(g_g.g_exit_status))
 		g_g.g_exit_status = WEXITSTATUS(g_g.g_exit_status);
 	else if (WIFSIGNALED(g_g.g_exit_status))
 		handle_execve_signal_errors(g_g.g_exit_status);
+	signal(SIGINT, handle_kill);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	execute_multiple_cmds(t_list *final_list, char **envp, t_infos *infos)
@@ -125,11 +140,11 @@ void	execute_multiple_cmds(t_list *final_list, char **envp, t_infos *infos)
 			else
 				inter_process(tmp, infos->help.pipe_ends, envp, infos);
 		}
-		if (tmp->delims != NULL && !tmp->next)
+		if (tmp->delims != NULL && tmp->next)
 			wait(NULL);
-		redirect_process(infos->help.pipe_ends);
+		redirect_process(infos->help.pipe_ends, tmp);
 		tmp = tmp->next;
 		infos->help.i++;
 	}
-	my_wait_all(infos->help.pipe_ends, infos->help.size, infos);
+	my_wait_all(infos, final_list);
 }
