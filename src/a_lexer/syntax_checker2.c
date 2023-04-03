@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_checker2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 12:08:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/03/24 23:07:17 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/04/03 02:52:42 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-/*temp function */
 
 void	finish_node(t_list **final, t_list *temp, int i)
 {
