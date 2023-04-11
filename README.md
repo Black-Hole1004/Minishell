@@ -13,6 +13,7 @@
 # Getting Started
 ## Prerequisites
 - A C compiler (e.g. GCC)
+- Readline library installed
 - Make command installed
 
 # Installation
